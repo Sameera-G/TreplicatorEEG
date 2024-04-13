@@ -1,0 +1,28 @@
+To address the issue of a delay when shifting from the PyQt5-based page to the Tkinter-based page, let's attempt to optimize the PyQt5 exiting process. The delay might stem from the PyQt5 application not closing cleanly or efficiently before launching the Tkinter application using `subprocess.Popen`.
+
+Instead of directly calling `subprocess.Popen` to open the Tkinter application, it could be efficient to ensure the PyQt5 application is fully terminated or at least processed to an idle state before initiating the Tkinter app.
+
+Let's modify the PyQt5 code in the `goToNextPage` method to include a clean-up function that attempts to gracefully close the PyQt5 application before starting the Tkinter application.
+
+### Modified PyQt5 Code Segment
+
+We'll modify the `goToNextPage` method to ensure the PyQt5 app is closed properly before starting the Tkinter application.
+
+```python
+@pyqtSlot()
+def goToNextPage(self):
+    # Switch to the third page
+    self.close()  # Ensure the current PyQt5 window is closed.
+    QApplication.quit()  # Try to quit the application properly
+    subprocess.Popen(["python", "thirdpage.py"])  # Start the third page
+```
+
+### Explanation
+
+In the modified method:
+- `self.close()` is called to ensure the current PyQt5 window is closed.
+- `QApplication.quit()` is added before moving to the Tkinter application. This attempts to terminate the PyQt5 application gracefully, allowing it to perform any cleanup necessary.
+- `subprocess.Popen(["python", "thirdpage.py"])` remains the same, where the Tkinter application (`thirdpage.py`) is initiated.
+
+This approach ensures that the PyQt5 application has a chance to shut down more gracefully, thus potentially reducing the delay when switching to the Tkinter application. Remember that the actual effectiveness of this modification can depend on the specific details of the PyQt5 application, the operating system, and how resources are being managed.
+
