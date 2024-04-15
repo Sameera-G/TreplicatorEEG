@@ -7,11 +7,15 @@ from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QEventLoop
 from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush
 import time
 import subprocess
+sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
+from stop_watch import StopWatch
+from firebase import Firebase
+from software_eng_pages.thirdpgsoft import DraggableCard
 
 # Initialize Firebase
-cred = credentials.Certificate('firebase/bci-research-77b3d-02a9edb61fd4.json')
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+#cred = credentials.Certificate('firebase/bci-research-77b3d-02a9edb61fd4.json')
+#firebase_admin.initialize_app(cred)
+#db = firestore.client()"""
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -21,9 +25,11 @@ class SplashScreen(QSplashScreen):
         self.setMask(pixmap.mask())
 
 class FirestoreApp(QWidget):
-    def __init__(self, selected_role, parent=None, timer=None):
+    def __init__(self, selected_role, user_id, parent=None, timer=None):
         super().__init__()
         self.selected_role = selected_role
+        self.user_id = user_id
+        self.firebase = Firebase()
         self.parent = parent  # Reference to TaskReplicatorApp
         self.timer = QTimer(timer)  # Receive the timer instance
         self.elapsedTime = 0  # Keep track of the elapsed time
@@ -122,16 +128,16 @@ class FirestoreApp(QWidget):
         difficulty_layout.addWidget(self.difficulty_entry)
         layout.addLayout(difficulty_layout)
 
-        self.addButton = QPushButton('Add Data to Firestore', self)
-        self.addButton.clicked.connect(self.addDataToFirestore)
-        self.addButton.setFont(QFont('Arial', 12))
-        self.addButton.setStyleSheet(style_1)
+        #self.addButton = QPushButton('Add Data to Firestore', self)
+        #self.addButton.clicked.connect(self.addDataToFirestore)
+        #self.addButton.setFont(QFont('Arial', 12))
+        #self.addButton.setStyleSheet(style_1)
 
         self.statusLabel = QLabel('', self)
         self.statusLabel.setFont(QFont('Arial', 12))
         self.statusLabel.setStyleSheet("color: white;")
 
-        layout.addWidget(self.addButton)
+        #layout.addWidget(self.addButton)
         layout.addWidget(self.statusLabel)
         self.setLayout(layout)
 
@@ -163,10 +169,12 @@ class FirestoreApp(QWidget):
             self.user_id_entry.setEnabled(False)
             self.statusLabel.setText(f"User '{user_id}' added.")
     
-    def addDataToFirestore(self):
+    """def addDataToFirestore(self):
         user_input = self.difficulty_entry.text()
-        if user_input:
-            doc_ref = db.collection(u'sample_data').document(self.user_id_entry.text())
+        user_id = self.user_id_entry.text()
+        if user_input and user_id:
+            # Construct the Firestore path based on the selected_role and user_id
+            doc_ref = db.collection(self.selected_role).document(user_id)
             doc_ref.set({'hardness_level': int(user_input)})
             self.statusLabel.setText("Difficulty level added to Firestore")
             self.difficulty_entry.clear()
@@ -175,7 +183,8 @@ class FirestoreApp(QWidget):
             elapsed_time_key = "nuclear_physics_description_read_time"
 
             # Add the elapsed time to Firestore in seconds
-            doc_ref.update({elapsed_time_key: self.elapsedTime})
+            doc_ref.update({elapsed_time_key: self.elapsedTime})"""
+
         
     # Stopwatch methods
     def startStopwatch(self):
@@ -194,19 +203,37 @@ class FirestoreApp(QWidget):
         splash = SplashScreen(pixmap)
         splash.show()
 
+        user_id = self.user_id_entry.text()
+        # Modify the field name to adhere to Firestore's naming conventions
+        elapsed_time_key = "nuclear_physics_description_read_time"
+        self.firebase.add_data(self.selected_role, user_id, {elapsed_time_key: self.elapsedTime})
+
+        # Define a dictionary mapping roles to corresponding actions
+        actions = {
+            "Teacher": lambda: subprocess.Popen(["python", "teacher_pages/thirdpage.py", self.selected_role, user_id]),
+            "Software Engineer": lambda: subprocess.Popen(["python", "software_eng_pages/thirdpgsoft.py", self.selected_role, user_id]),
+        }
+        # Get the action corresponding to the selected_role, defaulting to None if not found
+        action = actions.get(self.selected_role)
+        # If an action is found, execute it
+        if action:
+            action()
+        else:
+            print("No action defined for the selected role.")
+
         self.close()  # Ensure the current PyQt5 window is closed.
-        self.openNextPage()
+        #self.openNextPage()
 
         # Delay before showing the next page (simulated loading time)
         loop = QEventLoop()
         QTimer.singleShot(3000, loop.quit)  # Adjust the delay as needed
         loop.exec_()
 
-    def openNextPage(self):
+    """def openNextPage(self):
         # Define a dictionary mapping roles to corresponding actions
         actions = {
-            "Teacher": lambda: subprocess.Popen(["python", "teacher_pages/thirdpage.py"]),
-            "Software Engineer": lambda: subprocess.Popen(["python", "software_eng_pages/thirdpgsoft.py"]),
+            "Teacher": lambda: subprocess.Popen(["python", "teacher_pages/thirdpage.py", str(self.selected_role), str(self.user_id)]),
+            "Software Engineer": lambda: subprocess.Popen(["python", "software_eng_pages/thirdpgsoft.py", str(self.selected_role), str(self.user_id)]),
         }
         
         # Get the action corresponding to the selected_role, defaulting to None if not found
@@ -216,14 +243,13 @@ class FirestoreApp(QWidget):
         if action:
             action()
         else:
-            print("No action defined for the selected role.")
+            print("No action defined for the selected role.")"""
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    # Create a QTimer object
     timer = QTimer()
-    ex = FirestoreApp("Tester", timer=timer)  # Ensure you pass a valid role or modify this accordingly
+    ex = FirestoreApp("Tester", timer=timer)
     timer.timeout.connect(ex.updateStopwatch)
     ex.showMaximized()
     sys.exit(app.exec_())

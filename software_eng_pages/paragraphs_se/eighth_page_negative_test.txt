@@ -1,0 +1,20 @@
+Testing and Quality Assurance:
+
+Test Cases:
+
+Negative tests:
+
+1. User tries to log in with an incorrect password:
+    Input: Valid username and incorrect password.
+    Expected Outcome: Invalid username or password message.
+
+These test cases cover various scenarios to ensure the functionality, security, and reliability of the authentication feature. They can be categorized into different testing phases such as unit testing, integration testing, and security testing.
+
+TEST CASE: USER LOGIN FAILURE - INVALID PASSWORD
+
+TEST OBJECTIVE:
+- TO VERIFY THAT A USER CANNOT LOGIN WITH AN INVALID PASSWORD.
+
+DRAG AND DROP THE TST STEPS IN ORDER
+
+

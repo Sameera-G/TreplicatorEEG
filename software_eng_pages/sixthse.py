@@ -283,7 +283,7 @@ class MainWindow(tk.Tk):
         loop.exec_()
 
     def openNextPage(self):
-        subprocess.Popen(["python", "software_eng_pages/fourthpg_soft.py"])
+        subprocess.Popen(["python", "software_eng_pages/seventh_se.py"])
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

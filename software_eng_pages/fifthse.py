@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QApplication, QWidget, QSp
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop
 import subprocess
-sys.path.append('I:/Research/treplicator3')
+sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
 
 # Splash screen class

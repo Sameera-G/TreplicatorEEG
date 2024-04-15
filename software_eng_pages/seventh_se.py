@@ -7,9 +7,8 @@ from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QApplication, QWidget, QSp
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop
 import subprocess
-sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
-from stop_watch import StopWatch
-from firebase import Firebase
+sys.path.append('I:/Research/TreplicatorEEG')
+from utilities.stop_watch import StopWatch
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -65,18 +64,15 @@ class DraggableCard(tk.Label):
                 self.master.arrange_cards_in_cage(self)
 
 class MainWindow(tk.Tk):
-    def __init__(self, selected_role, user_id, firebase):
+    def __init__(self):
         super().__init__()
         self.title("Draggable Cards")
-        self.selected_role = selected_role
-        self.user_id = user_id
-        self.firebase = firebase
         self.fullScreenState = False
         self.geometry('400x300')
         self.bind("<F11>", self.toggleFullScreen)
         self.bind("<Escape>", self.quitFullScreen)
         self.toggleFullScreen(None)
-                
+
         # Load background image
         self.background_image = Image.open("images/background1.png")
         self.background_photo = ImageTk.PhotoImage(self.background_image)
@@ -91,7 +87,7 @@ class MainWindow(tk.Tk):
         self.cages = []  # Initialize cages as an empty list
 
         # Load text from file
-        self.load_text_from_file("software_eng_pages/paragraphs_se/softeeng_task_description.txt")
+        self.load_text_from_file("software_eng_pages/paragraphs_se/seventh_page_positive_test.txt")
 
         self.order_label = tk.Label(self, text="Waiting", bg="#1f1f1f", fg="white", font=("Arial", 20))
         self.order_label.place(x=self.winfo_screenwidth() - self.winfo_screenwidth() * 0.2, y=self.winfo_screenheight() * 0.7)
@@ -99,25 +95,9 @@ class MainWindow(tk.Tk):
         self.lock_button.place(x=self.winfo_screenwidth() - self.winfo_screenwidth() * 0.2, y=self.winfo_screenheight() * 0.8)
         #self.unlock_button = tk.Button(self, text="Unlock Cages", command=self.unlock_cages, state="disabled", font=("Arial", 10), bg="#333333", fg="white")
         #self.unlock_button.place(x=self.winfo_screenwidth() - 100, y=70)
-        
         self.create_cages()
         self.create_cards()
-        
-        
-        # Create stopwatch
-        self.stopwatch_label = tk.Label(self, text="", bg="#1f1f1f", fg="white", font=("Arial", 16))
-        self.stopwatch_label.place(x=self.winfo_screenwidth() - 100, y=100)
-        # Create stopwatch instance
-        self.stopwatch = StopWatch()
-        # Update stopwatch label every second
-        self.update_stopwatch()
 
-    def update_stopwatch(self):
-        self.stopwatch_label.config(text=self.stopwatch.elapsedTime)
-        self.after(1000, self.update_stopwatch)
-        return self.stopwatch.elapsedTime
-
-        
     def load_text_from_file(self, file_path):
         try:
             with open(file_path, "r") as file:
@@ -131,13 +111,25 @@ class MainWindow(tk.Tk):
                 self.create_curved_rectangle(canvas, 0, 0, canvas.winfo_width(), canvas.winfo_height(), 50)
 
                 # Create the text widget
-                text_widget = tk.Text(canvas, wrap="word", bg="#1f1f1f", fg="white", font=("Arial", 12),
+                text_widget = tk.Text(canvas, wrap="word", bg="#1f1f1f", fg="white", font=("Arial", 10),
                                     highlightbackground="#1f1f1f", highlightthickness=5, padx=10, pady=10)
                 text_widget.insert("1.0", content)
                 text_widget.place(relwidth=1, relheight=1)
                 text_widget.config(state="disabled")  # Make the text area read-only
         except FileNotFoundError:
             print("File not found. Please provide a valid file path.")
+
+        # Create stopwatch
+        self.stopwatch_label = tk.Label(self, text="", bg="#1f1f1f", fg="white", font=("Arial", 16))
+        self.stopwatch_label.place(x=self.winfo_screenwidth() - 70, y=60)
+        # Create stopwatch instance
+        self.stopwatch = StopWatch()
+        # Update stopwatch label every second
+        self.update_stopwatch()
+
+    def update_stopwatch(self):
+        self.stopwatch_label.config(text=self.stopwatch.elapsedTime)
+        self.after(1000, self.update_stopwatch)
 
     def create_curved_rectangle(self, canvas, x1, y1, x2, y2, r):
         canvas.create_arc(x1, y1, x1 + 2 * r, y1 + 2 * r, start=90, extent=90, outline="", fill="#1f1f1f")
@@ -182,23 +174,39 @@ class MainWindow(tk.Tk):
         self.calculate_percentage()
 
     def create_cages(self):
-        cage_height = int(self.winfo_screenheight() * 0.9/5 * 0.9)
-        num_cages = 5
-        left_margin_percentage = 0.3  # 30% space from the left side of the screen
+        cage_height = int(self.winfo_screenheight() * 0.9 / 4)
+        num_cages_first_column = 4
+        num_cages_second_column = 2
+        left_margin_percentage = 0.27  # 22% space from the left side of the screen
 
         # Calculate the width of the cages after leaving space on the left
-        cage_width = int((self.winfo_screenwidth() * (1 - left_margin_percentage)) / num_cages) * 2
-        cage_x_start = int(self.winfo_screenwidth() * left_margin_percentage)  # Starting X position
+        cage_width = int(self.winfo_screenwidth() * (left_margin_percentage * 1.2))
+        cage_x_start_first_column = int(self.winfo_screenwidth() * left_margin_percentage)  # Starting X position for first column
+        cage_x_start_second_column = cage_x_start_first_column + cage_width  # Starting X position for second column
 
-        top_margin_percentage = 0.05  # 0.05% space from the top of the screen
-        bottom_margin_percentage = 0.05  # 0.05% space from the bottom of the screen
-        available_height = self.winfo_screenheight() * (1 - top_margin_percentage - bottom_margin_percentage)
+        top_margin_percentage = 0.05  # 5% space from the top of the screen
+        space_between_cages = 2  # Adjust this value as needed
 
-        for i in range(num_cages):
-            cage_y = int(self.winfo_screenheight() * top_margin_percentage) + i * (available_height // num_cages)
-            cage = (cage_x_start, cage_x_start + cage_width, cage_y, cage_y + cage_height, False)  # Add lock status to cage tuple
-            self.create_curved_cage(cage_width, cage_height, cage_x_start, cage_y)
+        # Create cages in the first column
+        for i in range(num_cages_first_column):
+            cage_y = int(self.winfo_screenheight() * top_margin_percentage) + i * (cage_height + space_between_cages)
+            cage = (cage_x_start_first_column, cage_x_start_first_column + cage_width, cage_y, cage_y + cage_height, False)
+            self.create_curved_cage(cage_width, cage_height, cage_x_start_first_column, cage_y)
+            self.create_cage_number(cage_x_start_first_column + cage_width - 20, cage_y + 10, i + 1)
             self.cages.append(cage)
+
+        # Create cages in the second column
+        for i in range(num_cages_second_column):
+            cage_y = int(self.winfo_screenheight() * top_margin_percentage) + i * (cage_height + space_between_cages)
+            cage = (cage_x_start_second_column, cage_x_start_second_column + cage_width, cage_y, cage_y + cage_height, False)
+            self.create_curved_cage(cage_width, cage_height, cage_x_start_second_column, cage_y)
+            self.create_cage_number(cage_x_start_second_column + cage_width - 20, cage_y + 10, i + 1 + num_cages_first_column)
+            self.cages.append(cage)
+
+
+    def create_cage_number(self, x, y, number):
+        cage_number = tk.Label(self, text=str(number), bg="#4c4c4c", fg="white", font=("Arial", 10))
+        cage_number.place(x=x, y=y)
 
     def create_curved_cage(self, width, height, x, y):
         canvas = tk.Canvas(self, width=width, height=height, bg="#333333")
@@ -246,20 +254,57 @@ class MainWindow(tk.Tk):
 
 
     def create_cards(self):
+        # Define the user registration code snippet
+        one = (
+            "Set up the testing environment:\n"
+            "    - Enable testing mode in the Flask application configuration.\n"
+            "    - Configure the SQLAlchemy database URI to use an in-memory SQLite database."
+        )
+        two = (
+            "Create the necessary database tables.\n"
+        )
+        three = (
+            "Prepare the registration form data:\n"
+            "   - Define a dictionary containing valid user registration data:\n"
+            "       - Username: 'testuser'\n"
+            "       - Email: 'test@example.com'\n"
+            "       - Password: 'testpassword'\n"
+        )
+        four = (
+            "Simulate the user registration process:\n"
+            "   - Send a POST request to the registration route ('/register') \nof the Flask application.\n"
+            "   - Include the registration form data in the request payload.\n"
+        )
+        five = (
+            "Verify the registration outcome:\n"
+            "   - Check the response status code:\n"
+            "       - If the status code is 200, the registration was successful.\n"
+            "   - Check the response message:\n"
+            "       - If the message indicates success ('User registered successfully'), the test passes.\n"
+            "   - Verify database state:\n"
+            "       - Check if the user record exists in the database with the provided username.\n"
+        )
+        six = (
+            "Clean up:\n"
+            "   - Remove any test data created during the test.\n"
+            "   - Drop the database tables.\n"
+            "Expected Outcome:- The test should pass, indicating that the \nuser registration process works correctly with valid input data.\n"
+        )
         card_texts = [
-            "As a user, I want to create a new account on the educational \nweb application so that I can access \nexclusive features and content.",
-            "As a user, I want to log in to my existing account using my \nemail address and password to access \npersonalized content and track my progress.",
-            "As a user, I want the ability to reset my password if I forget it, \nensuring that I can regain access to my account securely.",
-            "As an administrator, I want to manage user accounts, including \nactivating, deactivating, and deleting accounts as needed.",
-            "As a developer, I want to implement user authentication \nsecurely, protecting user data and credentials \nfrom unauthorized access.",
-            "As a developer, I want the user to change \nthe operators profile picture"
+            one,
+            two,
+            three,
+            four,
+            five,
+            six
         ]
+
         random.shuffle(card_texts)
         num_cards = len(card_texts)
         right_margin = 20  # Set the margin from the right side of the screen
         for i in range(num_cards):
             card_text = card_texts[i]
-            card = DraggableCard(self, text=card_text, bg="#4c4c4c", fg="white", font=("Arial", 10))
+            card = DraggableCard(self, text=card_text, bg="#4c4c4c", fg="white", font=("Arial", 8), justify="left")
             # Place the card on the right-hand side with a margin
             card.place(
                 x=self.winfo_screenwidth() - right_margin - card.winfo_reqwidth() * 1,
@@ -267,15 +312,50 @@ class MainWindow(tk.Tk):
             )  
             self.cards.append(card)
 
-
     def calculate_percentage(self):
+        # Define the user registration code snippet
+        one = (
+            "Set up the testing environment:\n"
+            "    - Enable testing mode in the Flask application configuration.\n"
+            "    - Configure the SQLAlchemy database URI to use an in-memory SQLite database."
+        )
+        two = (
+            "Create the necessary database tables.\n"
+        )
+        three = (
+            "Prepare the registration form data:\n"
+            "   - Define a dictionary containing valid user registration data:\n"
+            "       - Username: 'testuser'\n"
+            "       - Email: 'test@example.com'\n"
+            "       - Password: 'testpassword'\n"
+        )
+        four = (
+            "Simulate the user registration process:\n"
+            "   - Send a POST request to the registration route ('/register') \nof the Flask application.\n"
+            "   - Include the registration form data in the request payload.\n"
+        )
+        five = (
+            "Verify the registration outcome:\n"
+            "   - Check the response status code:\n"
+            "       - If the status code is 200, the registration was successful.\n"
+            "   - Check the response message:\n"
+            "       - If the message indicates success ('User registered successfully'), the test passes.\n"
+            "   - Verify database state:\n"
+            "       - Check if the user record exists in the database with the provided username.\n"
+        )
+        six = (
+            "Clean up:\n"
+            "   - Remove any test data created during the test.\n"
+            "   - Drop the database tables.\n"
+            "Expected Outcome:- The test should pass, indicating that the \nuser registration process works correctly with valid input data.\n"
+        )
         correct_order = [
-            "As a user, I want to create a new account on the educational \nweb application so that I can access \nexclusive features and content.",
-            "As a user, I want to log in to my existing account using my \nemail address and password to access \npersonalized content and track my progress.",
-            "As a user, I want the ability to reset my password if I forget it, \nensuring that I can regain access to my account securely.",
-            "As an administrator, I want to manage user accounts, including \nactivating, deactivating, and deleting accounts as needed.",
-            "As a developer, I want to implement user authentication \nsecurely, protecting user data and credentials \nfrom unauthorized access.",
-            "As a developer, I want the user to change \nthe operators profile picture"
+            one,
+            two,
+            three,
+            four,
+            five,
+            six
         ]
         total_correct = sum(1 for cage in self.cages for card in self.cards
                             if cage[2] < card.winfo_y() < cage[3] and card.cget("text") == correct_order[self.cages.index(cage)])
@@ -283,8 +363,6 @@ class MainWindow(tk.Tk):
         percentage = (total_correct / total_cards) * 100 if total_cards != 0 else 0
         # Add newline character (\n) for multiline text
         self.order_label.config(text=f"Accuracy: {percentage:.2f}%", fg="white")
-        return percentage
-        
 
     def arrange_cards_in_cage(self, card):
         cards_in_cage = [c for c in self.cards if c.cage == card.cage]
@@ -292,19 +370,6 @@ class MainWindow(tk.Tk):
             c.place(x=card.cage[0] + 10, y=card.cage[2] + 10 + (i * 40))
 
     def goToNextPage(self):
-        # Calculate percentage
-        percentage = self.calculate_percentage()
-        # Update stopwatch and get the time taken
-        time_taken = self.update_stopwatch()
-        # Example usage: Adding data to Firestore
-        data = {
-            'Accuracy_Percentage': percentage,
-            'Time_taken_to_answer': time_taken,
-            # Add more fields as needed
-        }
-
-        firebase.update_data(self.selected_role, self.user_id, data)
-        
         # Show the splash screen
         pixmap = QPixmap("images/loading.jpg")
         splash = SplashScreen(pixmap)
@@ -320,16 +385,12 @@ class MainWindow(tk.Tk):
         loop.exec_()
 
     def openNextPage(self):
-        subprocess.Popen(["python", "software_eng_pages/fourthpg_soft.py"])
+        subprocess.Popen(["python", "software_eng_pages/eighthse.py"])
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    firebase = Firebase()
-    selected_role = sys.argv[1]
-    user_id = sys.argv[2]
-    window = MainWindow(selected_role, user_id, firebase)  # Pass the firebase object here
+    window = MainWindow()
     window.mainloop()
     sys.exit(app.exec_())
-
 
        

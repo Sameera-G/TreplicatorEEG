@@ -1,0 +1,59 @@
+Testing and Quality Assurance:
+
+Test Cases:
+
+Positive Test Cases:
+
+1. User successfully registers with valid username, email, and password:
+    Input: Valid username, valid email, and valid password.
+    Expected Outcome: User registration successful message.
+
+TEST CASE: USER REGISTRATION SUCCESS
+
+TEST OBJECTIVE:
+- TO VERIFY THAT A USER CAN SUCCESSFULLY REGISTER WITH VALID INPUT DATA.
+
+DRAG AND DROP THE TST STEPS IN ORDER
+
+2. User successfully logs in with valid username and password:
+    Input: Valid username and valid password.
+    Expected Outcome: Login successful message.
+
+3. User successfully logs out after logging in:
+    Input: User is logged in.
+    Expected Outcome: Logout successful message.
+
+Negative Test Cases:
+
+1. User tries to register with a username that already exists in the database:
+    Input: Username already existing in the database.
+    Expected Outcome: Form validation failed message with an error indicating username already exists.
+
+2. User tries to register with an invalid email format:
+    Input: Invalid email format (e.g., missing '@' symbol).
+    Expected Outcome: Form validation failed message with an error indicating invalid email format.
+
+3. User tries to log in with an incorrect password:
+    Input: Valid username and incorrect password.
+    Expected Outcome: Invalid username or password message.
+
+4. User tries to log in with a username that does not exist in the database:
+    Input: Username that does not exist in the database.
+    Expected Outcome: Invalid username or password message.
+
+Security Testing Scenarios:
+
+1. Test for SQL injection vulnerabilities in the registration and login forms:
+    Input: SQL injection payload in username or password field.
+    Expected Outcome: No successful SQL injection and proper handling of input.
+
+2. Test for cross-site scripting (XSS) vulnerabilities by submitting malicious scripts in form fields:
+    Input: Malicious script as username or password input.
+    Expected Outcome: No execution of the script and proper sanitization of input.
+
+3. Test for session management vulnerabilities, such as session fixation or session hijacking:
+    Input: Attempt to fix or hijack a session.
+    Expected Outcome: Secure session management preventing fixation or hijacking attempts.
+
+These test cases cover various scenarios to ensure the functionality, security, and reliability of the authentication feature. They can be categorized into different testing phases such as unit testing, integration testing, and security testing.
+

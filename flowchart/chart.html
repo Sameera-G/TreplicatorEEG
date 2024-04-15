@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EEG Analysis Flowchart</title>
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <div class="flowchart-container">
+        <h2>EEG Analysis for Mental Workload</h2>
+        <div class="flowchart-box start">Start</div>
+        <div class="flowchart-box">EEG Data Acquisition</div>
+            <div class="sub-box">Attach electrodes</div>
+            <div class="sub-box">Record brain activity</div>
+        <div class="flowchart-box">Preprocessing</div>
+            <div class="sub-box">Filter data</div>
+            <div class="sub-box">Segment data</div>
+            <div class="sub-box">Baseline correction</div>
+            <div class="sub-box">Artifact rejection</div>
+        <div class="flowchart-box">Feature Extraction</div>
+            <div class="sub-box">Extract features</div>
+        <div class="flowchart-box decision">(Optional)</div>
+        <div class="flowchart-box">Feature Selection</div>
+            <div class="sub-box">Select features</div>
+        <div class="flowchart-box">Classification</div>
+            <div class="sub-box">Train model</div>
+            <div class="sub-box">Validate model</div>
+        <div class="flowchart-box">Analysis & Interpretation</div>
+            <div class="sub-box">Analyze results</div>
+            <div class="sub-box">Interpret findings</div>
+        <div class="flowchart-box end">End</div>
+        <div class="connector" data-from="start" data-to="EEG Data Acquisition"></div>
+        <div class="connector" data-from="EEG Data Acquisition" data-to="Preprocessing"></div>
+        <div class="connector" data-from="Preprocessing" data-to="Feature Extraction"></div>
+        <div class="connector" data-from="Feature Extraction" data-to="Classification"></div>
+        <div class="connector" data-from="Feature Extraction" data-to="Feature Selection"></div> <div class="connector" data-from="Feature Selection" data-to="Classification"></div>
+        <div class="connector" data-from="Classification" data-to="Analysis & Interpretation"></div>
+        <div class="connector" data-from="Analysis & Interpretation" data-to="end"></div>
+    </div>
+</body>
+</html>

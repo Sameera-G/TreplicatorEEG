@@ -1,0 +1,16 @@
+Testing and Quality Assurance:
+
+Test Cases:
+
+Security Testing Scenarios:
+
+1. Test for SQL injection vulnerabilities in the registration and login forms:
+    Input: SQL injection payload in username or password field.
+    Expected Outcome: No successful SQL injection and proper handling of input.
+
+TEST CASE: SQL INJECTION PREVENTION
+
+TEST OBJCTIVE:
+- TO VERIFY THAT THE APPLICATION PRVENTS SQL INJECTION ATTACKS DURING USER REGISTRATION.
+
+DRAG AND DROP THE TST STEPS IN ORDER

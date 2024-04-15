@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 sys.path.append('I:/Research/treplicator3')
-from stop_watch import StopWatch
+from utilities.stop_watch import StopWatch
 
 class DraggableCard(tk.Label):
     def __init__(self, master, text, **kwargs):
