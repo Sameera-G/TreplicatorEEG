@@ -141,7 +141,7 @@ class TaskReplicatorApp(QWidget):
         self.firestore_window = FirestoreApp(selected_role, self)
         self.firestore_window.show()
         self.firestore_window.showFullScreen()
-        self.hide()
+        self.close()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

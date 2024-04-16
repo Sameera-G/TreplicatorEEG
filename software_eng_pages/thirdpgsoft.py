@@ -10,6 +10,7 @@ import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
 from firebase import Firebase
+from shared_data import KeepData
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -65,17 +66,20 @@ class DraggableCard(tk.Label):
                 self.master.arrange_cards_in_cage(self)
 
 class MainWindow(tk.Tk):
-    def __init__(self, selected_role, user_id, firebase):
+    def __init__(self, selected_role, user_id):
         super().__init__()
         self.title("Draggable Cards")
         self.selected_role = selected_role
-        self.user_id = user_id
-        self.firebase = firebase
+        
+        self.keep_data = KeepData()
+        self.firebase = Firebase()
         self.fullScreenState = False
         self.geometry('400x300')
         self.bind("<F11>", self.toggleFullScreen)
         self.bind("<Escape>", self.quitFullScreen)
         self.toggleFullScreen(None)
+
+        self.user_id = self.firebase.get_latest_user_id(self.selected_role, user_id)
                 
         # Load background image
         self.background_image = Image.open("images/background1.png")
@@ -279,7 +283,7 @@ class MainWindow(tk.Tk):
         ]
         total_correct = sum(1 for cage in self.cages for card in self.cards
                             if cage[2] < card.winfo_y() < cage[3] and card.cget("text") == correct_order[self.cages.index(cage)])
-        total_cards = len(self.cards)
+        total_cards = 5 #len(self.cards)
         percentage = (total_correct / total_cards) * 100 if total_cards != 0 else 0
         # Add newline character (\n) for multiline text
         self.order_label.config(text=f"Accuracy: {percentage:.2f}%", fg="white")
@@ -298,12 +302,13 @@ class MainWindow(tk.Tk):
         time_taken = self.update_stopwatch()
         # Example usage: Adding data to Firestore
         data = {
-            'Accuracy_Percentage': percentage,
-            'Time_taken_to_answer': time_taken,
+            'Accuracy_Percentage_User_Story_Identify': percentage,
+            'Time_taken_to_User_Story_Identify': time_taken,
             # Add more fields as needed
         }
 
-        firebase.update_data(self.selected_role, self.user_id, data)
+        self.firebase.update_data(self.selected_role, self.user_id, data)
+        subprocess.Popen(["python", "software_eng_pages/fourthpg_soft.py", self.selected_role, self.user_id])
         
         # Show the splash screen
         pixmap = QPixmap("images/loading.jpg")
@@ -312,24 +317,23 @@ class MainWindow(tk.Tk):
 
         #self.close()  # Ensure the current PyQt5 window is closed.
         self.destroy()
-        self.openNextPage()
 
         # Delay before showing the next page (simulated loading time)
         loop = QEventLoop()
         QTimer.singleShot(3000, loop.quit)  # Adjust the delay as needed
         loop.exec_()
 
-    def openNextPage(self):
-        subprocess.Popen(["python", "software_eng_pages/fourthpg_soft.py"])
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    firebase = Firebase()
-    selected_role = sys.argv[1]
-    user_id = sys.argv[2]
-    window = MainWindow(selected_role, user_id, firebase)  # Pass the firebase object here
+    keep_data = KeepData()
+    data = keep_data.get_data()
+    selected_role = data['selected_role']
+    user_id = data['user_id']
+    window = MainWindow(selected_role, user_id)  # Pass the firebase object here
     window.mainloop()
     sys.exit(app.exec_())
+
+
 
 
        

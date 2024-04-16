@@ -10,7 +10,7 @@ import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
 from firebase import Firebase
-from software_eng_pages.thirdpgsoft import DraggableCard
+from utilities_files.shared_data import KeepData
 
 # Initialize Firebase
 #cred = credentials.Certificate('firebase/bci-research-77b3d-02a9edb61fd4.json')
@@ -25,16 +25,17 @@ class SplashScreen(QSplashScreen):
         self.setMask(pixmap.mask())
 
 class FirestoreApp(QWidget):
-    def __init__(self, selected_role, user_id, parent=None, timer=None):
+    def __init__(self, selected_role, parent=None, timer=None):
         super().__init__()
         self.selected_role = selected_role
-        self.user_id = user_id
         self.firebase = Firebase()
         self.parent = parent  # Reference to TaskReplicatorApp
         self.timer = QTimer(timer)  # Receive the timer instance
         self.elapsedTime = 0  # Keep track of the elapsed time
+        self.keep_data = KeepData()  # Create an instance of KeepData class
         self.initUI()
         self.startStopwatch()
+
 
     def initUI(self):
         #style  define
@@ -196,7 +197,7 @@ class FirestoreApp(QWidget):
         elapsed_time_string = '{:02d}:{:02d}:{:02d}'.format(self.elapsedTime // 3600, (self.elapsedTime % 3600 // 60), self.elapsedTime % 60)
         self.stopwatchLabel.setText(elapsed_time_string)
 
-    @pyqtSlot()
+    
     def goToNextPage(self):
         # Show the splash screen
         pixmap = QPixmap("images/loading.jpg")
@@ -204,30 +205,24 @@ class FirestoreApp(QWidget):
         splash.show()
 
         user_id = self.user_id_entry.text()
-        # Modify the field name to adhere to Firestore's naming conventions
-        elapsed_time_key = "nuclear_physics_description_read_time"
+        self.keep_data.set_data(self.selected_role, user_id)  # Set data using KeepData instance
+        elapsed_time_key = "main_description_read_time"
         self.firebase.add_data(self.selected_role, user_id, {elapsed_time_key: self.elapsedTime})
 
-        # Define a dictionary mapping roles to corresponding actions
-        actions = {
-            "Teacher": lambda: subprocess.Popen(["python", "teacher_pages/thirdpage.py", self.selected_role, user_id]),
-            "Software Engineer": lambda: subprocess.Popen(["python", "software_eng_pages/thirdpgsoft.py", self.selected_role, user_id]),
-        }
-        # Get the action corresponding to the selected_role, defaulting to None if not found
-        action = actions.get(self.selected_role)
-        # If an action is found, execute it
-        if action:
-            action()
-        else:
-            print("No action defined for the selected role.")
+        # Construct the command to execute
+        command = ["python", "software_eng_pages/thirdpgsoft.py", str(self.selected_role), str(user_id)]
 
-        self.close()  # Ensure the current PyQt5 window is closed.
-        #self.openNextPage()
+        # Start the subprocess with the constructed command
+        subprocess.Popen(command)
+
+        self.close()
 
         # Delay before showing the next page (simulated loading time)
         loop = QEventLoop()
-        QTimer.singleShot(3000, loop.quit)  # Adjust the delay as needed
+        QTimer.singleShot(3000, loop.quit)
         loop.exec_()
+
+
 
     """def openNextPage(self):
         # Define a dictionary mapping roles to corresponding actions

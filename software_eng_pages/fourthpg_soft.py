@@ -7,8 +7,10 @@ from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QApplication, QWidget, QSp
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop
 import subprocess
-sys.path.append('I:/Research/TreplicatorEEG')
-from utilities.stop_watch import StopWatch
+sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
+from stop_watch import StopWatch
+from firebase import Firebase
+import shared_data
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -18,9 +20,13 @@ class SplashScreen(QSplashScreen):
         self.setMask(pixmap.mask())
 
 class MainWindow(tk.Tk):
-    def __init__(self):
+    def __init__(self, selected_role, user_id, firebase):
         super().__init__()
         self.title("Draggable Cards")
+        self.selected_role = selected_role
+        self.user_id = user_id
+        self.firebase = firebase
+        print("selcted role", selected_role)
         self.fullScreenState = False
         self.geometry('400x300')
         self.bind("<F11>", self.toggleFullScreen)
@@ -114,6 +120,7 @@ class MainWindow(tk.Tk):
         self.lock_button.config(state="disabled", bg="#333333")  # Disable lock button
         # Go to next page after 5 seconds
         self.after(5000, self.goToNextPage)
+        return percentage
 
 
     def create_text_boxes(self):
@@ -166,6 +173,18 @@ class MainWindow(tk.Tk):
 
 
     def goToNextPage(self):
+        # Calculate percentage
+        percentage = self.lock_boxes()
+        # Update stopwatch and get the time taken
+        time_taken = self.update_stopwatch()
+        # Example usage: Adding data to Firestore
+        data = {
+            'Accuracy_Percentage_User_matrix': percentage,
+            'Time_taken_to_User_matrix': time_taken,
+            # Add more fields as needed
+        }
+
+        firebase.update_data(self.selected_role, self.user_id, data)
         # Show the splash screen
         pixmap = QPixmap("images/loading.jpg")
         splash = SplashScreen(pixmap)
@@ -184,6 +203,9 @@ class MainWindow(tk.Tk):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow()
+    selected_role = shared_data.selected_role
+    user_id = shared_data.user_id
+    firebase = Firebase()
+    window = MainWindow(selected_role, user_id, firebase)
     window.mainloop()
     sys.exit(app.exec_())
