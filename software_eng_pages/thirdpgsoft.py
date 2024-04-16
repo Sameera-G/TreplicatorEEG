@@ -1,6 +1,7 @@
 import sys
 import tkinter as tk
 import random
+import json
 from PIL import Image, ImageTk
 import platform
 from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QApplication, QWidget, QSplashScreen
@@ -10,6 +11,7 @@ import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
 from firebase import Firebase
+from keep_data import KeepData
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -76,6 +78,8 @@ class MainWindow(tk.Tk):
         self.bind("<F11>", self.toggleFullScreen)
         self.bind("<Escape>", self.quitFullScreen)
         self.toggleFullScreen(None)
+        keepdata = KeepData()
+        print("keepd", keepdata.get_user_id())
                 
         # Load background image
         self.background_image = Image.open("images/background1.png")
@@ -291,6 +295,7 @@ class MainWindow(tk.Tk):
         for i, c in enumerate(cards_in_cage):
             c.place(x=card.cage[0] + 10, y=card.cage[2] + 10 + (i * 40))
 
+
     def goToNextPage(self):
         # Calculate percentage
         percentage = self.calculate_percentage()
@@ -322,11 +327,23 @@ class MainWindow(tk.Tk):
     def openNextPage(self):
         subprocess.Popen(["python", "software_eng_pages/fourthpg_soft.py"])
 
+def retrieve_data():
+        """Retrieves user data from a temporary file."""
+        try:
+            with open("user_data.tmp", "r") as file:
+                data = json.load(file)
+            return data["selected_role"], data["user_id"]
+        except FileNotFoundError:
+            print("Error: User data file not found.")
+            return None, None
+
+    
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     firebase = Firebase()
-    selected_role = sys.argv[1]
-    user_id = sys.argv[2]
+    # Retrieve data
+    selected_role, user_id = retrieve_data()
     window = MainWindow(selected_role, user_id, firebase)  # Pass the firebase object here
     window.mainloop()
     sys.exit(app.exec_())

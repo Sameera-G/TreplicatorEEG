@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QLabel, QSplashScreen
@@ -10,7 +11,7 @@ import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
 from firebase import Firebase
-from software_eng_pages.thirdpgsoft import DraggableCard
+from keep_data import KeepData
 
 # Initialize Firebase
 #cred = credentials.Certificate('firebase/bci-research-77b3d-02a9edb61fd4.json')
@@ -195,6 +196,12 @@ class FirestoreApp(QWidget):
         self.elapsedTime += 1
         elapsed_time_string = '{:02d}:{:02d}:{:02d}'.format(self.elapsedTime // 3600, (self.elapsedTime % 3600 // 60), self.elapsedTime % 60)
         self.stopwatchLabel.setText(elapsed_time_string)
+    
+    def store_data(self, selected_role, user_id):
+        """Stores user data in a temporary file."""
+        with open("user_data.tmp", "w") as file:
+            data = {"selected_role": selected_role, "user_id": user_id}
+            json.dump(data, file)
 
     @pyqtSlot()
     def goToNextPage(self):
@@ -204,8 +211,16 @@ class FirestoreApp(QWidget):
         splash.show()
 
         user_id = self.user_id_entry.text()
+        keepdata = KeepData()
+        keepdata.set_user_id(str(user_id))
+
+        # Example usage (assuming you have the data)
+        selected_role = self.selected_role
+        
+        self.store_data(selected_role, user_id)
+
         # Modify the field name to adhere to Firestore's naming conventions
-        elapsed_time_key = "nuclear_physics_description_read_time"
+        elapsed_time_key = "basic_description_read_time"
         self.firebase.add_data(self.selected_role, user_id, {elapsed_time_key: self.elapsedTime})
 
         # Define a dictionary mapping roles to corresponding actions
