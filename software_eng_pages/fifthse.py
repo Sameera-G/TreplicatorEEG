@@ -9,6 +9,8 @@ from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop
 import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
+from firebase import Firebase
+from retrive_role_id import RetriveRoleId
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -64,9 +66,12 @@ class DraggableCard(tk.Label):
                 self.master.arrange_cards_in_cage(self)
 
 class MainWindow(tk.Tk):
-    def __init__(self):
+    def __init__(self, selected_role, user_id, firebase):
         super().__init__()
         self.title("Draggable Cards")
+        self.selected_role = selected_role
+        self.user_id = user_id
+        self.firebase = firebase
         self.fullScreenState = False
         self.geometry('400x300')
         self.bind("<F11>", self.toggleFullScreen)
@@ -405,6 +410,7 @@ class MainWindow(tk.Tk):
         percentage = (total_correct / total_cards) * 100 if total_cards != 0 else 0
         # Add newline character (\n) for multiline text
         self.order_label.config(text=f"Accuracy: {percentage:.2f}%", fg="white")
+        return percentage
 
     def arrange_cards_in_cage(self, card):
         cards_in_cage = [c for c in self.cards if c.cage == card.cage]
@@ -412,6 +418,18 @@ class MainWindow(tk.Tk):
             c.place(x=card.cage[0] + 10, y=card.cage[2] + 10 + (i * 40))
 
     def goToNextPage(self):
+        # Calculate percentage
+        percentage = self.calculate_percentage()
+        # Update stopwatch and get the time taken
+        time_taken = self.update_stopwatch()
+        # Example usage: Adding data to Firestore
+        data = {
+            'Accuracy_Percentage_development_coding': percentage,
+            'Time_taken_to_answer_development_coding': time_taken,
+            # Add more fields as needed
+        }
+
+        firebase.update_data(self.selected_role, self.user_id, data)
         # Show the splash screen
         pixmap = QPixmap("images/loading.jpg")
         splash = SplashScreen(pixmap)
@@ -431,6 +449,10 @@ class MainWindow(tk.Tk):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    firebase = Firebase()
+    # Retrieve data
+    retriveroleid = RetriveRoleId()
+    selected_role, user_id = retriveroleid.retrieve_data()
     window = MainWindow()
     window.mainloop()
     sys.exit(app.exec_())

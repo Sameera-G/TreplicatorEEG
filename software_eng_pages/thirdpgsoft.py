@@ -11,7 +11,8 @@ import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
 from firebase import Firebase
-from keep_data import KeepData
+from retrive_role_id import RetriveRoleId
+
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -78,8 +79,6 @@ class MainWindow(tk.Tk):
         self.bind("<F11>", self.toggleFullScreen)
         self.bind("<Escape>", self.quitFullScreen)
         self.toggleFullScreen(None)
-        keepdata = KeepData()
-        print("keepd", keepdata.get_user_id())
                 
         # Load background image
         self.background_image = Image.open("images/background1.png")
@@ -283,7 +282,7 @@ class MainWindow(tk.Tk):
         ]
         total_correct = sum(1 for cage in self.cages for card in self.cards
                             if cage[2] < card.winfo_y() < cage[3] and card.cget("text") == correct_order[self.cages.index(cage)])
-        total_cards = len(self.cards)
+        total_cards = 5 #len(self.cards)
         percentage = (total_correct / total_cards) * 100 if total_cards != 0 else 0
         # Add newline character (\n) for multiline text
         self.order_label.config(text=f"Accuracy: {percentage:.2f}%", fg="white")
@@ -303,7 +302,7 @@ class MainWindow(tk.Tk):
         time_taken = self.update_stopwatch()
         # Example usage: Adding data to Firestore
         data = {
-            'Accuracy_Percentage': percentage,
+            'Accuracy_Percentage_user_story': percentage,
             'Time_taken_to_answer': time_taken,
             # Add more fields as needed
         }
@@ -327,23 +326,12 @@ class MainWindow(tk.Tk):
     def openNextPage(self):
         subprocess.Popen(["python", "software_eng_pages/fourthpg_soft.py"])
 
-def retrieve_data():
-        """Retrieves user data from a temporary file."""
-        try:
-            with open("user_data.tmp", "r") as file:
-                data = json.load(file)
-            return data["selected_role"], data["user_id"]
-        except FileNotFoundError:
-            print("Error: User data file not found.")
-            return None, None
-
-    
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     firebase = Firebase()
     # Retrieve data
-    selected_role, user_id = retrieve_data()
+    retriveroleid = RetriveRoleId()
+    selected_role, user_id = retriveroleid.retrieve_data()
     window = MainWindow(selected_role, user_id, firebase)  # Pass the firebase object here
     window.mainloop()
     sys.exit(app.exec_())

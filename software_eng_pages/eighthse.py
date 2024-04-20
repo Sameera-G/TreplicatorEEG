@@ -3,12 +3,14 @@ import tkinter as tk
 import random
 from PIL import Image, ImageTk
 import platform
-from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QApplication, QWidget, QSplashScreen
-from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtWidgets import QApplication, QSplashScreen
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop
 import subprocess
-sys.path.append('I:/Research/TreplicatorEEG')
-from utilities.stop_watch import StopWatch
+sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
+from stop_watch import StopWatch
+from firebase import Firebase
+from retrive_role_id import RetriveRoleId
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -64,9 +66,12 @@ class DraggableCard(tk.Label):
                 self.master.arrange_cards_in_cage(self)
 
 class MainWindow(tk.Tk):
-    def __init__(self):
+    def __init__(self, selected_role, user_id, firebase):
         super().__init__()
         self.title("Draggable Cards")
+        self.selected_role = selected_role
+        self.user_id = user_id
+        self.firebase = firebase
         self.fullScreenState = False
         self.geometry('400x300')
         self.bind("<F11>", self.toggleFullScreen)
@@ -80,6 +85,12 @@ class MainWindow(tk.Tk):
         # Set background image
         self.background_label = tk.Label(self, image=self.background_photo)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        # Create a title label with a black transparent ribbon background
+        title_frame = tk.Frame(self, bg="black", bd=0, highlightthickness=0)
+        title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.06)
+        title_label = tk.Label(title_frame, text="Code Testing (Negative Test Cases) - Arrange the testing Code Snippets in Correct Order", fg="white", bg="black", font=("Arial", 16, "bold"))
+        title_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Configure other widgets as before
         self.configure(bg="#1f1f1f")  # Set background color
@@ -105,7 +116,7 @@ class MainWindow(tk.Tk):
 
                 # Create a canvas for curved corners
                 canvas = tk.Canvas(self, bg="#1f1f1f", highlightbackground="#1f1f1f", highlightthickness=0)
-                canvas.place(x=10, y=self.winfo_screenheight() * 0.05, relwidth=0.25, relheight=0.9)
+                canvas.place(x=10, y=self.winfo_screenheight() * 0.07, relwidth=0.25, relheight=0.9)
 
                 # Add curved corners to the canvas
                 self.create_curved_rectangle(canvas, 0, 0, canvas.winfo_width(), canvas.winfo_height(), 50)
@@ -174,7 +185,9 @@ class MainWindow(tk.Tk):
         self.calculate_percentage()
 
     def create_cages(self):
-        cage_height = int(self.winfo_screenheight() * 0.9 / 4)
+        top_margin_percentage = 0.07  # 5% space from the top of the screen
+        space_between_cages = 2  # Adjust this value as needed
+        cage_height = int((self.winfo_screenheight() - top_margin_percentage) * 0.9 / 4) - 2
         num_cages_first_column = 4
         num_cages_second_column = 0
         left_margin_percentage = 0.27  # 22% space from the left side of the screen
@@ -183,9 +196,6 @@ class MainWindow(tk.Tk):
         cage_width = int(self.winfo_screenwidth() * (left_margin_percentage * 1.2))
         cage_x_start_first_column = int(self.winfo_screenwidth() * left_margin_percentage)  # Starting X position for first column
         cage_x_start_second_column = cage_x_start_first_column + cage_width  # Starting X position for second column
-
-        top_margin_percentage = 0.05  # 5% space from the top of the screen
-        space_between_cages = 2  # Adjust this value as needed
 
         # Create cages in the first column
         for i in range(num_cages_first_column):
@@ -343,6 +353,7 @@ class MainWindow(tk.Tk):
         percentage = (total_correct / total_cards) * 100 if total_cards != 0 else 0
         # Add newline character (\n) for multiline text
         self.order_label.config(text=f"Accuracy: {percentage:.2f}%", fg="white")
+        return percentage
 
     def arrange_cards_in_cage(self, card):
         cards_in_cage = [c for c in self.cards if c.cage == card.cage]
@@ -350,6 +361,18 @@ class MainWindow(tk.Tk):
             c.place(x=card.cage[0] + 10, y=card.cage[2] + 10 + (i * 40))
 
     def goToNextPage(self):
+        # Calculate percentage
+        percentage = self.lock_boxes()
+        # Update stopwatch and get the time taken
+        time_taken = self.update_stopwatch()
+        # Example usage: Adding data to Firestore
+        data = {
+            'Accuracy_Percentage_code_testing_Negative': percentage,
+            'Time_taken_to_answer_code_testing_Negative': time_taken,
+            # Add more fields as needed
+        }
+
+        firebase.update_data(self.selected_role, self.user_id, data)
         # Show the splash screen
         pixmap = QPixmap("images/loading.jpg")
         splash = SplashScreen(pixmap)
@@ -369,7 +392,11 @@ class MainWindow(tk.Tk):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow()
+    firebase = Firebase()
+    # Retrieve data
+    retriveroleid = RetriveRoleId()
+    selected_role, user_id = retriveroleid.retrieve_data()
+    window = MainWindow(selected_role, user_id, firebase)
     window.mainloop()
     sys.exit(app.exec_())
 

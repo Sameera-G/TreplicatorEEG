@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeline Diagram</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  .timeline {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f0f0f0;
+  }
+  .timeline__year {
+    flex: 1;
+    max-width: 33.33%;
+    text-align: center;
+    padding: 10px;
+    background-color: #e9e9e9;
+    border-radius: 8px;
+  }
+  .timeline__activity {
+    position: relative;
+    height: 200px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  .timeline__paper {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 12px;
+    color: #666666;
+  }
+</style>
+</head>
+<body>
+
+<div class="timeline">
+  <div class="timeline__year">
+    <h2>Year 1</h2>
+    <div class="timeline__activity" style="height: 100px; background-color: blue;"></div>
+    <div class="timeline__activity" style="height: 150px; background-color: orange;"></div>
+    <div class="timeline__activity" style="height: 180px; background-color: green;"></div>
+    <div class="timeline__activity" style="height: 120px; background-color: red;"></div>
+  </div>
+  <div class="timeline__year">
+    <h2>Year 2</h2>
+    <div class="timeline__activity" style="height: 140px; background-color: cyan;"></div>
+    <div class="timeline__activity" style="height: 160px; background-color: magenta;"></div>
+    <div class="timeline__activity" style="height: 190px; background-color: yellow;"></div>
+  </div>
+  <div class="timeline__year">
+    <h2>Year 3</h2>
+    <div class="timeline__activity" style="height: 170px; background-color: purple;"></div>
+    <div class="timeline__activity" style="height: 130px; background-color: brown;"></div>
+    <div class="timeline__activity" style="height: 110px; background-color: grey;"></div>
+  </div>
+</div>
+
+<script>
+  // Add paper labels dynamically
+  const papers = ['Paper 1', 'Paper 2', 'Paper 3', 'Paper 4 (Optional)'];
+  const activities = document.querySelectorAll('.timeline__activity');
+  activities.forEach((activity, index) => {
+    const paperLabel = document.createElement('div');
+    paperLabel.classList.add('timeline__paper');
+    paperLabel.textContent = papers[index] || '';
+    activity.appendChild(paperLabel);
+  });
+</script>
+
+</body>
+</html>
