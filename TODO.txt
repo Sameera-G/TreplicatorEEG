@@ -1,0 +1,32 @@
+put the title for page
+# Create a title label with a black transparent ribbon background
+title_frame = tk.Frame(self, bg="black", bd=0, highlightthickness=0)
+title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.06)
+title_label = tk.Label(title_frame, text="Code Testing (Security Test Cases) - Arrange the testing Code Snippets in Correct Order", fg="white", bg="black", font=("Arial", 16, "bold"))
+title_label.place(relx=0.5, rely=0.5, anchor="center")
+
+start from the third page
+then adjujst the cage gaps to make equal to bottom of text box (description text)
+
+start from thirdpage
+
+fill all the other roles like doctor civil engineer and other
+
+mobile application for NASA-TLX
+
+then secondry task if needed
+
+final questionnaire
+
+write the thesis intro and methodology
+
+deep learning model
+
+
+
+
+
+paragraphs/weekly_breakdown.txt
+
+
+

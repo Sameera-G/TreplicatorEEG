@@ -13,7 +13,7 @@ from stop_watch import StopWatch
 from firebase import Firebase
 from retrive_role_id import RetriveRoleId
 from draggable_cards import DraggableCard
-from utilities_view import create_curved_rectangle, create_cages, toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file
+from utilities_view import create_cages, toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -46,7 +46,7 @@ class MainWindow(tk.Tk):
         # Create a title label with a black transparent ribbon background
         title_frame = tk.Frame(self, bg="black", bd=0, highlightthickness=0)
         title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.06)
-        title_label = tk.Label(title_frame, text="Study Plan Weekly Breakdown - Arrange the Weekly Breakdown Snippets in Correct Order", fg="white", bg="black", font=("Arial", 16, "bold"))
+        title_label = tk.Label(title_frame, text="Curriculum Development - Arrange the Learning Objctives in Correct Order", fg="white", bg="black", font=("Arial", 16, "bold"))
         title_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Configure other widgets as before
@@ -55,7 +55,7 @@ class MainWindow(tk.Tk):
         self.cages = []  # Initialize cages as an empty list
 
         # Load text from file
-        self.load_text_from_file("paragraphs/weekly_breakdown.txt", 0.07, 0.35)
+        self.load_text_from_file("paragraphs/teacher_curriculum_description.txt", 0.07, 0.35)
 
         self.order_label = tk.Label(self, text="Waiting", bg="#1f1f1f", fg="white", font=("Arial", 20))
         self.order_label.place(x=self.winfo_screenwidth() - self.winfo_screenwidth() * 0.2, y=self.winfo_screenheight() * 0.7)
@@ -119,13 +119,11 @@ class MainWindow(tk.Tk):
 
     def create_cards(self):
         card_texts = [
-            "Introduction to Atomic Structure and the Discovery of the Nucleus \n(Overview of atomic theory and the Rutherford gold foil experiment) \n(Components of the nucleus: protons, neutrons, and nuclear forces)",
-            "Forces Within the Nucleus \n(The Strong Nuclear Force and its comparison to electromagnetic and gravitational forces) \n(Quantum mechanics introduction relevant to nuclear bonding)",
-            "Models of Nuclear Structure \n(The Liquid Drop Model: concept, applications, and limitations) \n(The Shell Model: understanding shell structure in nuclei)",
-            "Radioactivity and Nuclear Reactions \n(Types of radioactivity and decay processes) \n(Nuclear fission: principles, chain reactions, and reactors)",
-            "Nuclear Fusion and Energy Production \n(The process of nuclear fusion in stars and experimental reactors) \n(Comparison of fission and fusion as energy sources, including challenges and advancements)",
-            "Applications of Nuclear Physics \n(Nuclear physics in medicine - radiation therapy and diagnostic imaging) \n(Industrial and environmental applications - material analysis, dating techniques, and nuclear waste management)",
-            "Ethical and Societal Impact \n(The role of nuclear energy in addressing climate change) \n(Nuclear non-proliferation, waste management, and ethical considerations)",
+            "Understand the basic structure of the atom and \nthe discovery of the nucleus.",
+            "Have a foundational knowledge of nuclear forces, particularly \nthe strong nuclear force, and their role in nucleon binding.",
+            "Grasp the concepts of radioactivity, nuclear fission, \nand nuclear fusion and their applications.",
+            "Comprehend the models of nuclear structure, \nincluding the liquid drop model and the shell model.",
+            "Appreciate the impact of nuclear physics on technology, \nenergy, medicine, and environmental management."
         ]
         random.shuffle(card_texts)
         num_cards = len(card_texts)
@@ -142,16 +140,14 @@ class MainWindow(tk.Tk):
 
     def calculate_percentage(self):
         correct_order = [
-            "Introduction to Atomic Structure and the Discovery of the Nucleus \n(Overview of atomic theory and the Rutherford gold foil experiment) \n(Components of the nucleus: protons, neutrons, and nuclear forces)",
-            "Forces Within the Nucleus \n(The Strong Nuclear Force and its comparison to electromagnetic and gravitational forces) \n(Quantum mechanics introduction relevant to nuclear bonding)",
-            "Models of Nuclear Structure \n(The Liquid Drop Model: concept, applications, and limitations) \n(The Shell Model: understanding shell structure in nuclei)",
-            "Radioactivity and Nuclear Reactions \n(Types of radioactivity and decay processes) \n(Nuclear fission: principles, chain reactions, and reactors)",
-            "Nuclear Fusion and Energy Production \n(The process of nuclear fusion in stars and experimental reactors) \n(Comparison of fission and fusion as energy sources, including challenges and advancements)",
-            "Applications of Nuclear Physics \n(Nuclear physics in medicine - radiation therapy and diagnostic imaging) \n(Industrial and environmental applications - material analysis, dating techniques, and nuclear waste management)",
-            "Ethical and Societal Impact \n(The role of nuclear energy in addressing climate change) \n(Nuclear non-proliferation, waste management, and ethical considerations)",
+            "Understand the basic structure of the atom and \nthe discovery of the nucleus.",
+            "Have a foundational knowledge of nuclear forces, particularly \nthe strong nuclear force, and their role in nucleon binding.",
+            "Grasp the concepts of radioactivity, nuclear fission, \nand nuclear fusion and their applications.",
+            "Comprehend the models of nuclear structure, \nincluding the liquid drop model and the shell model.",
+            "Appreciate the impact of nuclear physics on technology, \nenergy, medicine, and environmental management."
         ]
         total_correct = 0
-        total_cards = len(correct_order)
+        total_cards = 5 #len(correct_order)
         for i, cage in enumerate(self.cages):
             cards_in_cage = [
                 card for card in self.cards if cage[2] < card.winfo_y() < cage[3]
@@ -177,13 +173,13 @@ class MainWindow(tk.Tk):
         # Example usage: Adding data to Firestore
 
         main_data = {
-            'Accuracy_Percentage_weekly_breakdown': percentage,
+            'Accuracy_Percentage_curriculum_development': percentage,
             # Add more fields as needed
         }
 
         # Data for the nested "times" collection
         time_data = {
-            'Time_taken_to_answer_weekly_breakdown': time_taken,
+            'Time_taken_for_curriculum_development': time_taken,
         }
         # Update the main collection (selected_role/user_id)
         firebase.update_data(self.selected_role, self.user_id, main_data)
@@ -205,7 +201,7 @@ class MainWindow(tk.Tk):
         loop.exec_()
 
     def openNextPage(self):
-        subprocess.Popen(["python", "teacher_pages/fifthpage_t.py"])
+        subprocess.Popen(["python", "teacher_pages/fourthpage_t.py"])
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

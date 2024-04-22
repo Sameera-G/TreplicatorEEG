@@ -9,14 +9,11 @@ from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush
 import time
 import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
+sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
 from firebase import Firebase
+from retrive_role_id import RetriveRoleId
 from keep_data import KeepData
-
-# Initialize Firebase
-#cred = credentials.Certificate('firebase/bci-research-77b3d-02a9edb61fd4.json')
-#firebase_admin.initialize_app(cred)
-#db = firestore.client()"""
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -76,12 +73,6 @@ class FirestoreApp(QWidget):
         self.user_id_entry.setStyleSheet("padding: 10px; border-radius: 15px;")
         user_id_layout.addWidget(self.user_id_entry)
         layout.addLayout(user_id_layout)
-
-        add_user_button = QPushButton('Add User', self)
-        add_user_button.clicked.connect(self.addUser)
-        add_user_button.setFont(QFont('Arial', 12))
-        add_user_button.setStyleSheet(style_1)
-        layout.addWidget(add_user_button)
 
         #have a space
         paragraph_label3 = QLabel(f"{self.selected_role} - Pre-Defined Task", self)

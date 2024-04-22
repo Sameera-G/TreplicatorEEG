@@ -11,6 +11,8 @@ sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
 from firebase import Firebase
 from retrive_role_id import RetriveRoleId
+from draggable_cards import DraggableCard
+from utilities_view import toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -18,52 +20,6 @@ class SplashScreen(QSplashScreen):
         super().__init__(pixmap)
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
         self.setMask(pixmap.mask())
-
-class DraggableCard(tk.Label):
-    def __init__(self, master, text, **kwargs):
-        super().__init__(master, text=text, padx=10, pady=5, **kwargs)
-        self.bind("<ButtonPress-1>", self.on_drag_start)
-        self.bind("<B1-Motion>", self.on_drag_motion)
-        self.bind("<ButtonRelease-1>", self.on_drag_release)
-        self._drag_start_x = 0
-        self._drag_start_y = 0
-        self.original_x = 0
-        self.original_y = 0
-        self.cage = None
-        self.locked = False
-
-    def on_drag_start(self, event):
-        if not self.locked:
-            self._drag_start_x = event.x
-            self._drag_start_y = event.y
-            self.original_x = self.winfo_x()
-            self.original_y = self.winfo_y()
-
-    def on_drag_motion(self, event):
-        if not self.locked:
-            x = self.winfo_x() - self._drag_start_x + event.x
-            y = self.winfo_y() - self._drag_start_y + event.y
-            self.place(x=x, y=y)
-
-    def on_drag_release(self, event):
-        if not self.locked:
-            self.snap_to_cage()
-
-    def snap_to_cage(self):
-        if not self.locked:
-            closest_cage = None
-            min_distance = float("inf")
-            for cage in self.master.cages:
-                if not cage[4] and cage[2] < self.winfo_y() < cage[3]:
-                    distance = abs(self.winfo_x() - cage[0])
-                    if distance < min_distance:
-                        min_distance = distance
-                        closest_cage = cage
-            if closest_cage:
-                self.place(x=closest_cage[0] + (closest_cage[1] - closest_cage[0]) // 2 - self.winfo_reqwidth() // 2,
-                           y=closest_cage[2] + (closest_cage[3] - closest_cage[2]) // 2 - self.winfo_reqheight() // 2)
-                self.cage = closest_cage
-                self.master.arrange_cards_in_cage(self)
 
 class MainWindow(tk.Tk):
     def __init__(self, selected_role, user_id, firebase):
@@ -76,7 +32,7 @@ class MainWindow(tk.Tk):
         self.geometry('400x300')
         self.bind("<F11>", self.toggleFullScreen)
         self.bind("<Escape>", self.quitFullScreen)
-        self.toggleFullScreen(None)
+        self.toggleFullScreen()
 
         # Load background image
         self.background_image = Image.open("images/background1.png")
@@ -86,13 +42,19 @@ class MainWindow(tk.Tk):
         self.background_label = tk.Label(self, image=self.background_photo)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
+        # Create a title label with a black transparent ribbon background
+        title_frame = tk.Frame(self, bg="black", bd=0, highlightthickness=0)
+        title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.06)
+        title_label = tk.Label(title_frame, text="Development of the Authentication System - Arrange the Code Snippets in Correct Order", fg="white", bg="black", font=("Arial", 16, "bold"))
+        title_label.place(relx=0.5, rely=0.5, anchor="center")
+
         # Configure other widgets as before
         self.configure(bg="#1f1f1f")  # Set background color
         self.cards = []
         self.cages = []  # Initialize cages as an empty list
 
         # Load text from file
-        self.load_text_from_file("software_eng_pages/paragraphs_se/softeeng_task_description.txt")
+        self.load_text_from_file("software_eng_pages/paragraphs_se/softeeng_task_description.txt", 0.07, 0.2)
 
         self.order_label = tk.Label(self, text="Waiting", bg="#1f1f1f", fg="white", font=("Arial", 20))
         self.order_label.place(x=self.winfo_screenwidth() - self.winfo_screenwidth() * 0.2, y=self.winfo_screenheight() * 0.7)
@@ -103,26 +65,8 @@ class MainWindow(tk.Tk):
         self.create_cages()
         self.create_cards()
 
-    def load_text_from_file(self, file_path):
-        try:
-            with open(file_path, "r") as file:
-                content = file.read()
-
-                # Create a canvas for curved corners
-                canvas = tk.Canvas(self, bg="#1f1f1f", highlightbackground="#1f1f1f", highlightthickness=0)
-                canvas.place(x=10, y=self.winfo_screenheight() * 0.05, relwidth=0.2, relheight=0.9)
-
-                # Add curved corners to the canvas
-                self.create_curved_rectangle(canvas, 0, 0, canvas.winfo_width(), canvas.winfo_height(), 50)
-
-                # Create the text widget
-                text_widget = tk.Text(canvas, wrap="word", bg="#1f1f1f", fg="white", font=("Arial", 10),
-                                    highlightbackground="#1f1f1f", highlightthickness=5, padx=10, pady=10)
-                text_widget.insert("1.0", content)
-                text_widget.place(relwidth=1, relheight=1)
-                text_widget.config(state="disabled")  # Make the text area read-only
-        except FileNotFoundError:
-            print("File not found. Please provide a valid file path.")
+    def load_text_from_file(self, file_path, margin_from_top, relwidth):
+        load_text_from_file(self, file_path, margin_from_top, relwidth)
 
         # Create stopwatch
         self.stopwatch_label = tk.Label(self, text="", bg="#1f1f1f", fg="white", font=("Arial", 16))
@@ -135,6 +79,7 @@ class MainWindow(tk.Tk):
     def update_stopwatch(self):
         self.stopwatch_label.config(text=self.stopwatch.elapsedTime)
         self.after(1000, self.update_stopwatch)
+        return self.stopwatch.elapsedTime
 
     def create_curved_rectangle(self, canvas, x1, y1, x2, y2, r):
         canvas.create_arc(x1, y1, x1 + 2 * r, y1 + 2 * r, start=90, extent=90, outline="", fill="#1f1f1f")
@@ -144,15 +89,11 @@ class MainWindow(tk.Tk):
         canvas.create_rectangle(x1 + r, y1, x2 - r, y2, outline="", fill="#1f1f1f")
         canvas.create_rectangle(x1, y1 + r, x2, y2 - r, outline="", fill="#1f1f1f")
 
-    def toggleFullScreen(self, event):
-        self.fullScreenState = not self.fullScreenState
-        self.attributes("-fullscreen", self.fullScreenState)
-        self.geometry('400x300')
+    def toggleFullScreen(self):
+        toggle_full_screen(self)
 
-    def quitFullScreen(self, event):
-        self.fullScreenState = False
-        self.attributes("-fullscreen", self.fullScreenState)
-        self.geometry('400x300')
+    def quitFullScreen(self):
+        quit_full_screen(self)
 
     def lock_cages(self):
         for cage in self.cages:
@@ -177,92 +118,42 @@ class MainWindow(tk.Tk):
         for card in self.cards:
             card.locked = False
         self.calculate_percentage()
-
+    
     def create_cages(self):
-        cage_height = int(self.winfo_screenheight() * 0.9 / 3.05)
-        num_cages = 5
+        top_margin_percentage = 0.07  # 5% space from the top of the screen
+        space_between_cages = 2  # Adjust this value as needed
+        cage_height = int((self.winfo_screenheight() - top_margin_percentage) * 0.9 / 3) - 2
+        num_cages_first_column = 3
+        num_cages_second_column = 2
         left_margin_percentage = 0.22  # 22% space from the left side of the screen
 
         # Calculate the width of the cages after leaving space on the left
-        cage_width = int((self.winfo_screenwidth() * (1 - left_margin_percentage)) / num_cages) * 2
-        cage_x_start = int(self.winfo_screenwidth() * left_margin_percentage)  # Starting X position
+        cage_width = int(self.winfo_screenwidth() * (left_margin_percentage * 1.2))
+        cage_x_start_first_column = int(self.winfo_screenwidth() * left_margin_percentage)  # Starting X position for first column
+        cage_x_start_second_column = cage_x_start_first_column + cage_width  # Starting X position for second column
 
-        top_margin_percentage = 0.05  # 5% space from the top of the screen
-        space_between_cages = 2  # Adjust this value as needed
-
-        # Create the first two cages in a row
-        for i in range(2):
-            cage_y = int(self.winfo_screenheight() * top_margin_percentage)
-            cage = (cage_x_start + i * (cage_width + space_between_cages), cage_x_start + (i + 1) * cage_width,
-                    cage_y, cage_y + cage_height, False)
-            self.create_curved_cage(cage_width, cage_height, cage_x_start + i * (cage_width + space_between_cages), cage_y)
-            self.create_cage_number(cage_x_start + (i + 1) * cage_width - 20, cage_y + 10, i + 1)
+        # Create cages in the first column
+        for i in range(num_cages_first_column):
+            cage_y = int(self.winfo_screenheight() * top_margin_percentage) + i * (cage_height + space_between_cages)
+            cage = (cage_x_start_first_column, cage_x_start_first_column + cage_width, cage_y, cage_y + cage_height, False)
+            self.create_curved_cage(cage_width, cage_height, cage_x_start_first_column, cage_y)
+            self.create_cage_number(cage_x_start_first_column + cage_width - 20, cage_y + 10, i + 1)
             self.cages.append(cage)
 
-        # Create the next two cages in the second row
-        for i in range(2, 4):
-            cage_y = int(self.winfo_screenheight() * top_margin_percentage) + cage_height + space_between_cages
-            cage = (cage_x_start + (i - 2) * (cage_width + space_between_cages), cage_x_start + (i - 1) * cage_width,
-                    cage_y, cage_y + cage_height, False)
-            self.create_curved_cage(cage_width, cage_height, cage_x_start + (i - 2) * (cage_width + space_between_cages), cage_y)
-            self.create_cage_number(cage_x_start + (i - 1) * cage_width - 20, cage_y + 10, i + 1)
+        # Create cages in the second column
+        for i in range(num_cages_second_column):
+            cage_y = int(self.winfo_screenheight() * top_margin_percentage) + i * (cage_height + space_between_cages)
+            cage = (cage_x_start_second_column, cage_x_start_second_column + cage_width, cage_y, cage_y + cage_height, False)
+            self.create_curved_cage(cage_width, cage_height, cage_x_start_second_column, cage_y)
+            self.create_cage_number(cage_x_start_second_column + cage_width - 20, cage_y + 10, i + 1 + num_cages_first_column)
             self.cages.append(cage)
-
-        # Create the last cage in the third row
-        cage_y = int(self.winfo_screenheight() * top_margin_percentage) + 2 * (cage_height + space_between_cages)
-        cage = (cage_x_start, cage_x_start + cage_width, cage_y, cage_y + cage_height, False)
-        self.create_curved_cage(cage_width, cage_height, cage_x_start, cage_y)
-        self.create_cage_number(cage_x_start + cage_width - 20, cage_y + 10, 5)
-        self.cages.append(cage)
 
     def create_cage_number(self, x, y, number):
         cage_number = tk.Label(self, text=str(number), bg="#4c4c4c", fg="white", font=("Arial", 10))
         cage_number.place(x=x, y=y)
 
     def create_curved_cage(self, width, height, x, y):
-        canvas = tk.Canvas(self, width=width, height=height, bg="#333333")
-        canvas.place(x=x, y=y)
-
-        # Get the window ID of the canvas
-        window_id = canvas.winfo_id()
-
-        # Check the platform to set transparency
-        if platform.system() == "Windows":
-            # Set transparency for Windows using the window ID
-            from ctypes import windll
-            windll.dwmapi.DwmSetWindowAttribute(window_id, 2, 0, 2)  # Enable transparency
-
-        elif platform.system() == "Darwin":
-            # Set transparency for macOS using the window ID
-            # Example: set the alpha value to 0.5 (50% transparency)
-            from ctypes import c_void_p, c_float, c_int, POINTER, Structure, windll
-            #kcgwindow_alpha = 5
-            kcgnull_window_id = 0
-            kcgwindow_list_option_all = 0
-            kcgwindow_image_option_default = 0
-
-            # Define necessary structures and types
-            class CGRect(Structure):
-                _fields_ = [("origin", c_void_p), ("size", c_void_p)]
-
-            #CGFloat = c_float
-            #CFIndex = c_int
-
-            # Get necessary functions from CoreGraphics framework
-            #cgwindow_list_copy_window_info = windll.CoreGraphics.cgwindow_list_copy_window_info
-            cgwindow_list_create_image = windll.CoreGraphics.cgwindow_list_create_image
-            cgwindow_list_create_image.restype = c_void_p
-            cgwindow_list_create_image.argtypes = [CGRect, c_int, c_int, c_int]
-
-            # Set transparency by calling macOS-specific functions
-            image = cgwindow_list_create_image(CGRect(), kcgwindow_list_option_all, kcgnull_window_id, kcgwindow_image_option_default)
-            canvas.create_image(0, 0, image=image, anchor=tk.NW)
-
-        elif platform.system() == "Linux":
-            # Set transparency for Linux using the window ID
-            # Note: Linux transparency might require additional configuration
-            pass
-
+        create_curved_cage(self, width, height, x, y)
 
     def create_cards(self):
         # Define the user registration code snippet
@@ -423,13 +314,20 @@ class MainWindow(tk.Tk):
         # Update stopwatch and get the time taken
         time_taken = self.update_stopwatch()
         # Example usage: Adding data to Firestore
-        data = {
+        main_data = {
             'Accuracy_Percentage_development_coding': percentage,
-            'Time_taken_to_answer_development_coding': time_taken,
             # Add more fields as needed
         }
 
-        firebase.update_data(self.selected_role, self.user_id, data)
+        # Data for the nested "times" collection
+        time_data = {
+            'Time_taken_to_answer_development_coding': time_taken,
+        }
+        # Update the main collection (selected_role/user_id)
+        firebase.update_data(self.selected_role, self.user_id, main_data)
+        # Add to the nested "times" collection using the new method
+        firebase.add_time_data(self.selected_role, self.user_id, time_data)
+        
         # Show the splash screen
         pixmap = QPixmap("images/loading.jpg")
         splash = SplashScreen(pixmap)
@@ -453,7 +351,7 @@ if __name__ == "__main__":
     # Retrieve data
     retriveroleid = RetriveRoleId()
     selected_role, user_id = retriveroleid.retrieve_data()
-    window = MainWindow()
+    window = MainWindow(selected_role, user_id, firebase)
     window.mainloop()
     sys.exit(app.exec_())
 

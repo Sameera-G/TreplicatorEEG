@@ -7,6 +7,12 @@ from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QApplication, QWidget, QSp
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop
 import subprocess
+sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
+from stop_watch import StopWatch
+from firebase import Firebase
+from retrive_role_id import RetriveRoleId
+from draggable_cards import DraggableCard
+from utilities_view import toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -15,56 +21,11 @@ class SplashScreen(QSplashScreen):
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
         self.setMask(pixmap.mask())
 
-class DraggableCard(tk.Label):
-    def __init__(self, master, text, **kwargs):
-        super().__init__(master, text=text, padx=10, pady=5, **kwargs)
-        self.bind("<ButtonPress-1>", self.on_drag_start)
-        self.bind("<B1-Motion>", self.on_drag_motion)
-        self.bind("<ButtonRelease-1>", self.on_drag_release)
-        self._drag_start_x = 0
-        self._drag_start_y = 0
-        self.original_x = 0
-        self.original_y = 0
-        self.cage = None
-        self.locked = False
-
-    def on_drag_start(self, event):
-        if not self.locked:
-            self._drag_start_x = event.x
-            self._drag_start_y = event.y
-            self.original_x = self.winfo_x()
-            self.original_y = self.winfo_y()
-
-    def on_drag_motion(self, event):
-        if not self.locked:
-            x = self.winfo_x() - self._drag_start_x + event.x
-            y = self.winfo_y() - self._drag_start_y + event.y
-            self.place(x=x, y=y)
-
-    def on_drag_release(self, event):
-        if not self.locked:
-            self.snap_to_cage()
-
-    def snap_to_cage(self):
-        if not self.locked:
-            closest_cage = None
-            min_distance = float("inf")
-            for cage in self.master.cages:
-                if not cage[4] and cage[2] < self.winfo_y() < cage[3]:
-                    distance = abs(self.winfo_x() - cage[0])
-                    if distance < min_distance:
-                        min_distance = distance
-                        closest_cage = cage
-            if closest_cage:
-                self.place(x=closest_cage[0] + (closest_cage[1] - closest_cage[0]) // 2 - self.winfo_reqwidth() // 2,
-                           y=closest_cage[2] + (closest_cage[3] - closest_cage[2]) // 2 - self.winfo_reqheight() // 2)
-                self.cage = closest_cage
-                self.master.arrange_cards_in_cage(self)
-
 class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Draggable Cards")
+        self.firebase = firebase
         self.fullScreenState = False
         self.geometry('400x300')
         self.bind("<F11>", self.toggleFullScreen)
@@ -85,7 +46,7 @@ class MainWindow(tk.Tk):
         self.cages = []  # Initialize cages as an empty list
 
         # Load text from file
-        self.load_text_from_file("paragraphs/teacher_curriculum_description.txt")  # Replace 'your_text_file.txt' with your file path
+        self.load_text_from_file("paragraphs/teacher_curriculum_description.txt", 0.07, 0.25)  # Replace 'your_text_file.txt' with your file path
 
         self.order_label = tk.Label(self, text="Waiting", bg="#1f1f1f", fg="white", font=("Arial", 20))
         self.order_label.place(x=self.winfo_screenwidth() - self.winfo_screenwidth() * 0.2, y=self.winfo_screenheight() * 0.7)
@@ -96,26 +57,6 @@ class MainWindow(tk.Tk):
         self.create_cages()
         self.create_cards()
 
-    def load_text_from_file(self, file_path):
-        try:
-            with open(file_path, "r") as file:
-                content = file.read()
-
-                # Create a canvas for curved corners
-                canvas = tk.Canvas(self, bg="#1f1f1f", highlightbackground="#1f1f1f", highlightthickness=0)
-                canvas.place(x=10, y=self.winfo_screenheight() * 0.05, relwidth=0.25, relheight=0.9)
-
-                # Add curved corners to the canvas
-                self.create_curved_rectangle(canvas, 0, 0, canvas.winfo_width(), canvas.winfo_height(), 50)
-
-                # Create the text widget
-                text_widget = tk.Text(canvas, wrap="word", bg="#1f1f1f", fg="white", font=("Arial", 12),
-                                    highlightbackground="#1f1f1f", highlightthickness=5, padx=10, pady=10)
-                text_widget.insert("1.0", content)
-                text_widget.place(relwidth=1, relheight=1)
-                text_widget.config(state="disabled")  # Make the text area read-only
-        except FileNotFoundError:
-            print("File not found. Please provide a valid file path.")
 
     def create_curved_rectangle(self, canvas, x1, y1, x2, y2, r):
         canvas.create_arc(x1, y1, x1 + 2 * r, y1 + 2 * r, start=90, extent=90, outline="", fill="#1f1f1f")
@@ -286,6 +227,7 @@ class MainWindow(tk.Tk):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    firebase = Firebase()
     window = MainWindow()
     window.mainloop()
     sys.exit(app.exec_())
