@@ -86,7 +86,7 @@ class TaskReplicatorApp(QWidget):
 
         right_layout = QVBoxLayout()
         self.buttons = []
-        roles = ["Teacher", "Software Engineer", "Civil Engineer", "Doctor", "Nurse", "Labor"]
+        roles = ["Teacher", "Software Engineer", "Civil Engineer", "Doctor"]
         for role in roles:
             button = QPushButton(role, self)
             button.setFont(QFont('Arial', 16))

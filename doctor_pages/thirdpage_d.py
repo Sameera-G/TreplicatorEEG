@@ -13,7 +13,7 @@ from stop_watch import StopWatch
 from firebase_func import Firebase
 from retrive_role_id import RetriveRoleId
 from draggable_cards import DraggableCard
-from utilities_view import create_cages, toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file
+from utilities_view import create_curved_rectangle, create_cages, toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
@@ -46,7 +46,7 @@ class MainWindow(tk.Tk):
         # Create a title label with a black transparent ribbon background
         title_frame = tk.Frame(self, bg="black", bd=0, highlightthickness=0)
         title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.06)
-        title_label = tk.Label(title_frame, text="Curriculum Development - Arrange the Learning Objctives in Correct Order", fg="white", bg="black", font=("Arial", 16, "bold"))
+        title_label = tk.Label(title_frame, text="Code Testing (Security Test Cases) - Arrange the testing Code Snippets in Correct Order", fg="white", bg="black", font=("Arial", 16, "bold"))
         title_label.place(relx=0.5, rely=0.5, anchor="center")
 
         # Configure other widgets as before
@@ -55,7 +55,7 @@ class MainWindow(tk.Tk):
         self.cages = []  # Initialize cages as an empty list
 
         # Load text from file
-        self.load_text_from_file("paragraphs/teacher_curriculum_description.txt", 0.07, 0.35)
+        self.load_text_from_file("doctor_pages/paragraphs_d/doctor_task_description_basic.txt", 0.07, 0.35)
 
         self.order_label = tk.Label(self, text="Waiting", bg="#1f1f1f", fg="white", font=("Arial", 20))
         self.order_label.place(x=self.winfo_screenwidth() - self.winfo_screenwidth() * 0.2, y=self.winfo_screenheight() * 0.7)
@@ -119,11 +119,16 @@ class MainWindow(tk.Tk):
 
     def create_cards(self):
         card_texts = [
-            "Understand the basic structure of the atom and \nthe discovery of the nucleus.",
-            "Have a foundational knowledge of nuclear forces, particularly \nthe strong nuclear force, and their role in nucleon binding.",
-            "Grasp the concepts of radioactivity, nuclear fission, \nand nuclear fusion and their applications.",
-            "Comprehend the models of nuclear structure, \nincluding the liquid drop model and the shell model.",
-            "Appreciate the impact of nuclear physics on technology, \nenergy, medicine, and environmental management."
+            "Reviewing Patient Medical History",
+            "Conducting Physical Examination",
+            "Collecting Diagnostic Data",
+            "Listening to Patient Symptoms",
+            "Generating Differential Diagnoses",
+            "Formulating a Preliminary Diagnosis",
+            "Creating a Treatment Plan",
+            "Educating and Counseling the Patient",
+            "Scheduling Follow-Up Appointments",
+            "Maintaining Accurate Medical Records",
         ]
         random.shuffle(card_texts)
         num_cards = len(card_texts)
@@ -140,25 +145,44 @@ class MainWindow(tk.Tk):
 
     def calculate_percentage(self):
         correct_order = [
-            "Understand the basic structure of the atom and \nthe discovery of the nucleus.",
-            "Have a foundational knowledge of nuclear forces, particularly \nthe strong nuclear force, and their role in nucleon binding.",
-            "Grasp the concepts of radioactivity, nuclear fission, \nand nuclear fusion and their applications.",
-            "Comprehend the models of nuclear structure, \nincluding the liquid drop model and the shell model.",
-            "Appreciate the impact of nuclear physics on technology, \nenergy, medicine, and environmental management."
+            "Reviewing Patient Medical History",
+            "Conducting Physical Examination",
+            "Collecting Diagnostic Data",
+            "Listening to Patient Symptoms",
+            "Generating Differential Diagnoses",
+            "Formulating a Preliminary Diagnosis",
+            "Creating a Treatment Plan",
+            "Educating and Counseling the Patient",
+            "Scheduling Follow-Up Appointments",
+            "Maintaining Accurate Medical Records",
         ]
+        # Check if the number of cages matches the number of correct_order items
+        total_cards = len(correct_order)
+        if len(self.cages) != total_cards:
+            raise ValueError("Number of cages does not match the expected order length.")
+
         total_correct = 0
-        total_cards = 5 #len(correct_order)
         for i, cage in enumerate(self.cages):
+            # Find cards within the cage's Y-coordinate range
             cards_in_cage = [
-                card for card in self.cards if cage[2] < card.winfo_y() < cage[3]
+                card for card in self.cards 
+                if cage[2] < card.winfo_y() < cage[3]
             ]
+
+            # If there is only one card in the cage
             if len(cards_in_cage) == 1:
                 card_text = cards_in_cage[0].cget("text")
                 if card_text == correct_order[i]:
                     total_correct += 1
-        percentage = (total_correct / total_cards) * 100 if total_cards != 0 else 0
+
+        # Calculate the percentage of correct placements
+        percentage = (total_correct / total_cards) * 100
+
+        # Update the label with the calculated percentage
         self.order_label.config(text=f"Accuracy: {percentage:.2f}%", fg="white")
+
         return percentage
+
 
     def arrange_cards_in_cage(self, card):
         cards_in_cage = [c for c in self.cards if c.cage == card.cage]
@@ -173,13 +197,13 @@ class MainWindow(tk.Tk):
         # Example usage: Adding data to Firestore
 
         main_data = {
-            'Accuracy_Percentage_curriculum_development': percentage,
+            'Accuracy_Percentage_patient_diagnosis': percentage,
             # Add more fields as needed
         }
 
         # Data for the nested "times" collection
         time_data = {
-            'Time_taken_for_curriculum_development': time_taken,
+            'Time_taken_to_answer_patient_diagnosis': time_taken,
         }
         # Update the main collection (selected_role/user_id)
         firebase.update_data(self.selected_role, self.user_id, main_data)
@@ -201,7 +225,7 @@ class MainWindow(tk.Tk):
         loop.exec_()
 
     def openNextPage(self):
-        subprocess.Popen(["python", "teacher_pages/fourthpage_t.py"])
+        subprocess.Popen(["python", "doctor_pages/fourthpg_d.py"])
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

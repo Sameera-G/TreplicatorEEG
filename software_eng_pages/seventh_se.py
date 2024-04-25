@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop
 import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
-from firebase import Firebase
+from firebase_func import Firebase
 from retrive_role_id import RetriveRoleId
 from draggable_cards import DraggableCard
 from utilities_view import toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file

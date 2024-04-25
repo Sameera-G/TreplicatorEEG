@@ -1,17 +1,14 @@
 import sys
 import os
 import json
-import firebase_admin
-from firebase_admin import credentials, firestore
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QLabel, QSplashScreen
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QEventLoop
 from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush
 import time
 import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
-sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
-from firebase import Firebase
+from firebase_func import Firebase
 from retrive_role_id import RetriveRoleId
 from keep_data import KeepData
 

@@ -1,12 +1,15 @@
-put the title for page
-# Create a title label with a black transparent ribbon background
-title_frame = tk.Frame(self, bg="black", bd=0, highlightthickness=0)
-title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.06)
-title_label = tk.Label(title_frame, text="Code Testing (Security Test Cases) - Arrange the testing Code Snippets in Correct Order", fg="white", bg="black", font=("Arial", 16, "bold"))
-title_label.place(relx=0.5, rely=0.5, anchor="center")
+*************
+fifth_t.py file
 
-start from the third page
-then adjujst the cage gaps to make equal to bottom of text box (description text)
+now check the question button state and how the calculations is done to take the percentage.
+check the change_state function how does it work
+put the percentage cage a bit upper
+add some more questions
+put the set of qustions downwards
+
+
+
+***************
 
 start from thirdpage
 

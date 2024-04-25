@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QEventLoop
 from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush
 import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
-from firebase import Firebase
+from firebase_func import Firebase
 from retrive_role_id import RetriveRoleId
 
 # Initialize Firebase

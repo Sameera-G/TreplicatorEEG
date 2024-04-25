@@ -7,7 +7,7 @@ import platform
 import sys
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from stop_watch import StopWatch
-from firebase import Firebase
+from firebase_func import Firebase
 
 class SecondPage(tk.Frame):
     def __init__(self, master=None, user_id=None):
