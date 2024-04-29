@@ -1,7 +1,6 @@
 import sys
 import os
 import json
-import firebase_admin
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QLabel, QSplashScreen
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QEventLoop
 from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush
@@ -9,11 +8,6 @@ import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
 from firebase_func import Firebase
 from retrive_role_id import RetriveRoleId
-
-# Initialize Firebase
-#cred = credentials.Certificate('firebase/bci-research-77b3d-02a9edb61fd4.json')
-#firebase_admin.initialize_app(cred)
-#db = firestore.client()"""
 
 # Splash screen class
 class SplashScreen(QSplashScreen):

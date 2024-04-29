@@ -2,7 +2,6 @@ import sys
 import tkinter as tk
 import random
 from PIL import Image, ImageTk
-import platform
 from PyQt5.QtWidgets import QApplication, QSplashScreen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop

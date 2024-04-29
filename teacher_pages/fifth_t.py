@@ -9,7 +9,6 @@ from firebase_func import Firebase
 from retrive_role_id import RetriveRoleId
 from utilities_view import toggle_full_screen, quit_full_screen, load_text_from_file
 
-
 class TrueFalseButton(tk.Button):
     def __init__(self, master, text, on_click_callback):
         super().__init__(master, text=text, font=("Arial", 12))
@@ -34,7 +33,6 @@ class TrueFalseButton(tk.Button):
 
         return self.state
 
-
 class StopWatch:
     def __init__(self):
         self.start_time = time.time()
@@ -42,7 +40,6 @@ class StopWatch:
     @property
     def elapsed_seconds(self):
         return round(time.time() - self.start_time)
-
 
 class MainWindow(tk.Tk):
     def __init__(self, selected_role, user_id, firebase):

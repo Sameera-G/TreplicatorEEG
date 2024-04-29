@@ -6,7 +6,7 @@ from PyQt5.QtGui import QFont, QPixmap, QPalette, QBrush
 import pyttsx3
 from PyQt5.QtCore import QTimer
 
-from treplicator import FirestoreApp  # Import the pyttsx3 library for text-to-speech functionality.
+from treplicator import FirestoreApp
 
 class TaskReplicatorApp(QWidget):
     def __init__(self):

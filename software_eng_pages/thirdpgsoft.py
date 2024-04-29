@@ -3,9 +3,8 @@ import tkinter as tk
 import random
 import json
 from PIL import Image, ImageTk
-import platform
-from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QApplication, QWidget, QSplashScreen
-from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtWidgets import QApplication, QSplashScreen
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, QTimer, QEventLoop
 import subprocess
 sys.path.append('I:/Research/TreplicatorEEG/utilities_files')
@@ -13,7 +12,7 @@ from stop_watch import StopWatch
 from firebase_func import Firebase
 from retrive_role_id import RetriveRoleId
 from draggable_cards import DraggableCard
-from utilities_view import create_curved_rectangle, create_cages, toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file
+from utilities_view import create_cages, toggle_full_screen, quit_full_screen, create_curved_cage, load_text_from_file
 
 # Splash screen class
 class SplashScreen(QSplashScreen):
