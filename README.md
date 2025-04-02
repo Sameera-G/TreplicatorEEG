@@ -1,131 +1,19 @@
-# EEG-Based Mental Workload Assessment Tools for Software Engineers
-
-This repository provides custom-built data collection tools developed to assess mental workload (MWL) in software engineers. The framework integrates **task simulations**, **self-reported assessments (NASA-TLX)**, and **EEG signal monitoring**, ensuring a dual-source workload evaluation. It follows a **Design Science Research (DSR)** methodology for iterative development and validation.
-
-## Project Title
-
-**Development and Evaluation of Custom Data Collection Tools for Mental Workload Assessment in Software Engineers: A Design Science Research Approach**
-
----
-
-## Abstract
-Mental workload (MWL) assessment is crucial in high-cognitive-demand professions such as software engineering, where mental strain impacts productivity, accuracy, and well-being. Traditional MWL assessment methods, which are based solely on subjective self-reports or physiological signals alone, often lack reliability, real-world applicability, or comprehensive validation. This study introduces a custom-built data collection framework tailored for software engineers, integrating a Task Simulation Desktop Application (TSDA) and a Self-Reporting Mobile Application (SRMA). The TSDA replicates real-world software engineering tasks, while the SRMA collects self-reported workload levels (NASA-TLX) alongside objective electroencephalography (EEG) signals.
-
-The research follows the Design Science Research (DSR) methodology, ensuring iterative development, usability testing, and refinement of the tools based on software engineer feedback. A structured pilot test phase evaluated the effectiveness of the system, leading to improved usability, data synchronization, and reliability. The results demonstrate that the tools developed provide a structured and scalable MWL data collection framework, allowing dual-source workload assessment through synchronized EEG-based physiological monitoring and subjective reporting. Although this study focuses on tool development, future research will employ machine learning-based workload analysis to automate MWL classification, improve real-time workload prediction, and improve adaptive cognitive load management in software engineering workflows. The integration of EEG signals along with task simulations performance and NASA-TLX self-reports provides a dual-validation mechanism, which lays the groundwork for AI-driven cognitive workload prediction models aimed at optimizing task allocation and well-being of Software Engineers.
-
-## Tools Developed
-
-### 1. Task Simulation Desktop Application (TSDA)
-Simulates real-world software engineering tasks to collect performance-related data such as:
-- Task accuracy
-- Completion time
-- EEG signal synchronization
-
-🔗 [TSDA Source Code on GitHub](https://github.com/Sameera-G/TreplicatorEEG)
-
-### 2. Self-Reporting Mobile Application (SRMA)
-Records self-reported MWL values using NASA-TLX after each simulated task.
-
-🔗 [SRMA Source Code on GitHub](https://github.com/Sameera-G/nasa_tlx_eeg_research)
-
----
-
-## Methodology
-
-The tools were developed using the **Design Science Research (DSR)** method, consisting of:
-- **Relevance Cycle**: Identifying needs and task characteristics
-- **Design Cycle**: Gathering requirements and building artifacts
-- **Rigor Cycle**: Ensuring scientific validity and alignment with EEG + NASA-TLX standards
-- **Evaluation Cycle**: Pilot testing, usability improvements, and validation
-
- 
-
----
-
-## Key Features
-
-| Feature | TSDA | SRMA |
-|--------|------|------|
-| Task simulation | ✅ | ❌ |
-| EEG integration | ✅ | ❌ |
-| NASA-TLX workload rating | ❌ | ✅ |
-| Firebase synchronization | ✅ | ✅ |
-| Cross-platform support | Windows/macOS | Android |
-| Real-time data logging | ✅ | ✅ |
-
----
-
-## Research Objectives
-
-- Identify EEG-based workload measurement components
-- Correlate NASA-TLX with EEG signals
-- Evaluate effectiveness through usability testing
-- Lay the foundation for machine learning-based MWL prediction
-
----
-
-## Pilot Testing
-
-Three-phase iterative testing ensured:
-- Timestamp-accurate data synchronization
-- Realistic task simulation and performance tracking
-- Usability validation with software engineers
-
----
-
-## Results Summary
-
-EEG Data: Synchronized with tasks
-
-NASA-TLX: Captured subjective perception post-task
-
-Performance Metrics: Completion time, accuracy
-
-Data Storage: Firebase real-time cloud database
-
-
-
-## 📷 Screenshots
-
-| TSDA Interface | SRMA NASA-TLX Rating |
-|----------------|-----------------------|
-| ![TSDA](<img width="1280" alt="software_eng_first_page" src="https://github.com/user-attachments/assets/67261453-7b37-49eb-94e0-0679bdbceccf" />) | ![SRMA_pages](https://github.com/user-attachments/assets/e06a0929-0225-40df-a001-664a02c52d96) |
-
----
-
-## Future Work
-
-- Integration of **machine learning** for real-time workload classification
-- Deployment in real software development environments
-- Adaptive workload management using AI
-
----
-
-## Ethical Considerations
-
-- EEG data anonymized and stored securely (Firebase)
-- No personal identifiers collected
-- GDPR-compliant consent obtained for data collection
-
----
-
-## Citation
-
-If you use or refer to this project in your work, please cite:
-
-```
-Sameera Gamage, Pantea Keikhosrokiani, "Development and Evaluation of Custom Data Collection Tools for Mental Workload Assessment in Software Engineers: A Design Science Research Approach", 2025.
-```
-
----
-
-## Contact
-
-- **Sameera Gamage**  
-  University of Oulu  
-  [sameera.gamage@oulu.fi](mailto:sameera.gamage@oulu.fi)  
-  🔗 [Research Profile](https://www.softwareengineering.fi/researchers/sameera-gamage)
-
----
-
-Let me know if you'd like me to convert this into a downloadable `README.md` file or want a tailored version for your GitHub Pages, academic CV, or publication abstract.
+![Mental_workload_first_paper_019](https://github.com/user-attachments/assets/ed5295e7-cac1-4e4e-8abc-a56374a70964)
+![Mental_workload_first_paper_018](https://github.com/user-attachments/assets/36c9761b-2c78-4320-aeec-0e3953a8d618)
+![Mental_workload_first_paper_017](https://github.com/user-attachments/assets/c06a95f0-30d4-4de5-8d9e-302b0aff191d)
+![Mental_workload_first_paper_016](https://github.com/user-attachments/assets/cc71d3be-ef58-4ff4-b3ed-716f96e3c4a1)
+![Mental_workload_first_paper_015](https://github.com/user-attachments/assets/d66dffba-39b3-40c3-8fd8-606d1af32cfc)
+![Mental_workload_first_paper_014](https://github.com/user-attachments/assets/2fc1527d-ee43-4cb0-9370-3eac73a46237)
+![Mental_workload_first_paper_013](https://github.com/user-attachments/assets/b0a7f742-a1eb-4d37-93ed-bc18808553ad)
+![Mental_workload_first_paper_012](https://github.com/user-attachments/assets/fa362aba-7220-442e-ad4d-3a64adb25d8e)
+![Mental_workload_first_paper_011](https://github.com/user-attachments/assets/dc47a7a0-ab8b-4548-8cee-629acc945a34)
+![Mental_workload_first_paper_010](https://github.com/user-attachments/assets/2c0f0347-6c0f-4c87-835f-512bc575eda4)
+![Mental_workload_first_paper_009](https://github.com/user-attachments/assets/40006df0-b90e-44ef-ab39-4737a3f03f34)
+![Mental_workload_first_paper_008](https://github.com/user-attachments/assets/5b9804d6-fe45-4395-b45f-2c6bff6ef908)
+![Mental_workload_first_paper_007](https://github.com/user-attachments/assets/73fbfb6d-e2ac-42a1-83cf-d652b9866b9e)
+![Mental_workload_first_paper_006](https://github.com/user-attachments/assets/d567db60-35a0-4ba3-b319-285564cdb1b6)
+![Mental_workload_first_paper_005](https://github.com/user-attachments/assets/4bb908cc-0145-4d18-b8c3-e1c428087167)
+![Mental_workload_first_paper_004](https://github.com/user-attachments/assets/e83807f7-5c14-431b-b095-a2fa79b42c32)
+![Mental_workload_first_paper_003](https://github.com/user-attachments/assets/e691ef59-819a-414c-a3cf-5c5e99ab4a26)
+![Mental_workload_first_paper_002](https://github.com/user-attachments/assets/d6340734-b978-45a2-bc2f-1c834dc91a5e)
+![Mental_workload_first_paper_001](https://github.com/user-attachments/assets/80f6a731-fef7-4c16-badc-02dcf61e9261)
