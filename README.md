@@ -1,7 +1,3 @@
-Sure, Sameera! Here's a cleaned-up and well-structured version of your LaTeX-based research article, converted into **Markdown format suitable for a GitHub `README.md` file**. This version highlights your project, tools, methodology, and links while maintaining clarity for developers and researchers visiting your repo.
-
----
-
 # EEG-Based Mental Workload Assessment Tools for Software Engineers
 
 This repository provides custom-built data collection tools developed to assess mental workload (MWL) in software engineers. The framework integrates **task simulations**, **self-reported assessments (NASA-TLX)**, and **EEG signal monitoring**, ensuring a dual-source workload evaluation. It follows a **Design Science Research (DSR)** methodology for iterative development and validation.
@@ -42,10 +38,7 @@ The tools were developed using the **Design Science Research (DSR)** method, con
 - **Rigor Cycle**: Ensuring scientific validity and alignment with EEG + NASA-TLX standards
 - **Evaluation Cycle**: Pilot testing, usability improvements, and validation
 
- **EEG Band Focus**:
-- Theta (4–8 Hz): Mental effort  
-- Alpha (8–12 Hz): Inverse workload indicator  
-- Beta (13–30 Hz): Active attention  
+ 
 
 ---
 
