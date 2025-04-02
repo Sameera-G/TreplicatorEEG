@@ -38,6 +38,9 @@ Records self-reported MWL values using NASA-TLX after each simulated task.
 
 ---
 
+## Usecase diagram for research process using both applications TSDA and SRMA
+![usecase_diagrams](https://github.com/user-attachments/assets/0cca9fa3-1a81-45f9-a077-1d2c4f61ae24)
+
 ## Screenshots of user interfaces
 
 # TSDA Interface 
