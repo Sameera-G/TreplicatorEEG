@@ -1,19 +1,69 @@
-![Mental_workload_first_paper_019](https://github.com/user-attachments/assets/ed5295e7-cac1-4e4e-8abc-a56374a70964)
-![Mental_workload_first_paper_018](https://github.com/user-attachments/assets/36c9761b-2c78-4320-aeec-0e3953a8d618)
-![Mental_workload_first_paper_017](https://github.com/user-attachments/assets/c06a95f0-30d4-4de5-8d9e-302b0aff191d)
-![Mental_workload_first_paper_016](https://github.com/user-attachments/assets/cc71d3be-ef58-4ff4-b3ed-716f96e3c4a1)
-![Mental_workload_first_paper_015](https://github.com/user-attachments/assets/d66dffba-39b3-40c3-8fd8-606d1af32cfc)
-![Mental_workload_first_paper_014](https://github.com/user-attachments/assets/2fc1527d-ee43-4cb0-9370-3eac73a46237)
-![Mental_workload_first_paper_013](https://github.com/user-attachments/assets/b0a7f742-a1eb-4d37-93ed-bc18808553ad)
-![Mental_workload_first_paper_012](https://github.com/user-attachments/assets/fa362aba-7220-442e-ad4d-3a64adb25d8e)
-![Mental_workload_first_paper_011](https://github.com/user-attachments/assets/dc47a7a0-ab8b-4548-8cee-629acc945a34)
-![Mental_workload_first_paper_010](https://github.com/user-attachments/assets/2c0f0347-6c0f-4c87-835f-512bc575eda4)
-![Mental_workload_first_paper_009](https://github.com/user-attachments/assets/40006df0-b90e-44ef-ab39-4737a3f03f34)
-![Mental_workload_first_paper_008](https://github.com/user-attachments/assets/5b9804d6-fe45-4395-b45f-2c6bff6ef908)
-![Mental_workload_first_paper_007](https://github.com/user-attachments/assets/73fbfb6d-e2ac-42a1-83cf-d652b9866b9e)
-![Mental_workload_first_paper_006](https://github.com/user-attachments/assets/d567db60-35a0-4ba3-b319-285564cdb1b6)
-![Mental_workload_first_paper_005](https://github.com/user-attachments/assets/4bb908cc-0145-4d18-b8c3-e1c428087167)
-![Mental_workload_first_paper_004](https://github.com/user-attachments/assets/e83807f7-5c14-431b-b095-a2fa79b42c32)
-![Mental_workload_first_paper_003](https://github.com/user-attachments/assets/e691ef59-819a-414c-a3cf-5c5e99ab4a26)
-![Mental_workload_first_paper_002](https://github.com/user-attachments/assets/d6340734-b978-45a2-bc2f-1c834dc91a5e)
-![Mental_workload_first_paper_001](https://github.com/user-attachments/assets/80f6a731-fef7-4c16-badc-02dcf61e9261)
+# EEG-Based Mental Workload Assessment Tools for Software Engineers
+
+This repository provides custom-built data collection tools developed to assess mental workload (MWL) in software engineers. The framework integrates **task simulations**, **self-reported assessments (NASA-TLX)**, and **EEG signal monitoring**, ensuring a dual-source workload evaluation. It follows a **Design Science Research (DSR)** methodology for iterative development and validation.
+
+## Project Title
+
+**Development and Evaluation of Custom Data Collection Tools for Mental Workload Assessment in Software Engineers: A Design Science Research Approach**
+
+---
+
+## Tools Developed
+
+### 1. Task Simulation Desktop Application (TSDA)
+Simulates real-world software engineering tasks to collect performance-related data such as:
+- Task accuracy
+- Completion time
+- EEG signal synchronization
+
+🔗 [TSDA Source Code on GitHub](https://github.com/Sameera-G/TreplicatorEEG)
+
+### 2. Self-Reporting Mobile Application (SRMA)
+Records self-reported MWL values using NASA-TLX after each simulated task.
+
+🔗 [SRMA Source Code on GitHub](https://github.com/Sameera-G/nasa_tlx_eeg_research)
+
+---
+
+## 📋 Key Features
+
+| Feature | TSDA | SRMA |
+|--------|------|------|
+| Task simulation | ✅ | ❌ |
+| EEG integration | ✅ | ✅ |
+| NASA-TLX workload rating | ❌ | ✅ |
+| Firebase synchronization | ✅ | ✅ |
+| Cross-platform support | Windows/macOS | Android |
+| Real-time data logging | ✅ | ✅ |
+
+---
+
+## Screenshots of user interfaces
+
+| TSDA Interface | SRMA NASA-TLX Rating |
+|----------------|-----------------------|
+| ![TSDA](<img width="1280" alt="software_eng_first_page" src="https://github.com/user-attachments/assets/d4b9d162-20b2-434e-8095-b1dea29c72bc" />
+) | ![SRMA_pages](https://github.com/user-attachments/assets/29e78c2c-fe40-43f7-82a2-3081da843d9d) |
+
+---
+
+## 🔍 Future Work
+
+- Integration of **machine learning** for real-time workload classification
+- Deployment in real software development environments
+- Adaptive workload management using AI
+
+```
+Sameera Gamage, Pantea Keikhosrokiani, "Development and Evaluation of Custom Data Collection Tools for Mental Workload Assessment in Software Engineers: A Design Science Research Approach", 2025.
+```
+
+---
+
+## 📫 Contact
+
+- **Sameera Gamage**  
+  University of Oulu  
+  [sameera.gamage@oulu.fi](mailto:sameera.gamage@oulu.fi)  
+  🔗 [Research Profile](https://www.softwareengineering.fi/researchers/sameera-gamage)
+
+---
