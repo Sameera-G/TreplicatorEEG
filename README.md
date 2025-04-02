@@ -25,7 +25,7 @@ Records self-reported MWL values using NASA-TLX after each simulated task.
 
 ---
 
-## 📋 Key Features
+## Key Features
 
 | Feature | TSDA | SRMA |
 |--------|------|------|
@@ -41,15 +41,14 @@ Records self-reported MWL values using NASA-TLX after each simulated task.
 ## Screenshots of user interfaces
 
 # TSDA Interface 
-
-(<img width="1280" alt="software_eng_first_page" src="https://github.com/user-attachments/assets/d4b9d162-20b2-434e-8095-b1dea29c72bc" />
+<img width="1280" alt="software_eng_first_page" src="https://github.com/user-attachments/assets/39ecfb79-17fe-4b61-86f1-dd3a21776dc1" />
 
 # SRMA NASA-TLX Rating
-(https://github.com/user-attachments/assets/29e78c2c-fe40-43f7-82a2-3081da843d9d)
+![SRMA_pages](https://github.com/user-attachments/assets/f2bc68f4-7346-4c5c-ad6c-1ac16e456af1)
 
 ---
 
-## 🔍 Future Work
+## Future Work
 
 - Integration of **machine learning** for real-time workload classification
 - Deployment in real software development environments
@@ -61,7 +60,7 @@ Sameera Gamage, Pantea Keikhosrokiani, "Development and Evaluation of Custom Dat
 
 ---
 
-## 📫 Contact
+## Contact
 
 - **Sameera Gamage**  
   University of Oulu  
