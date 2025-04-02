@@ -42,10 +42,10 @@ Records self-reported MWL values using NASA-TLX after each simulated task.
 
 # TSDA Interface 
 
-![TSDA initial workload identification page](<img width="1280" alt="software_eng_first_page" src="https://github.com/user-attachments/assets/d4b9d162-20b2-434e-8095-b1dea29c72bc" />
+(<img width="1280" alt="software_eng_first_page" src="https://github.com/user-attachments/assets/d4b9d162-20b2-434e-8095-b1dea29c72bc" />
 
 # SRMA NASA-TLX Rating
-![SRMA_pages](https://github.com/user-attachments/assets/29e78c2c-fe40-43f7-82a2-3081da843d9d)
+(https://github.com/user-attachments/assets/29e78c2c-fe40-43f7-82a2-3081da843d9d)
 
 ---
 
